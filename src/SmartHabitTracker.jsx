@@ -982,10 +982,6 @@ const SmartHabitTracker = () => {
   return (
     <div className="habit-tracker-container">
       <header className="habit-header">
-        <div className="habit-title-group">
-          <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Smart Habit Tracker</h2>
-          <p style={{ color: 'var(--text-muted)' }}>Build consistent routines and track your progress.</p>
-        </div>
         <div className="habit-controls">
           <div className="xp-counter" title={`${currentMonthStats.monthName} XP`}>
             <Zap size={16} fill="white" />
