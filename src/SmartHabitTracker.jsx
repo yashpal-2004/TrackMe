@@ -1064,7 +1064,7 @@ const SmartHabitTracker = () => {
           <span className="label">Total Habits</span>
           <span className="value">{stats.total}</span>
         </div>
-        <div className="stat-card" style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div className="stat-card" style={{ flex: '1.8', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <button className="calendar-nav-btn" onClick={() => setCollectiveDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}>
