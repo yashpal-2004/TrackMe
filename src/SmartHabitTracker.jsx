@@ -975,46 +975,57 @@ const SmartHabitTracker = () => {
         </div>
 
         <div className="habit-stats-overview" style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center', flex: 1, justifyContent: 'center', minWidth: 0, fontSize: '0.68rem', fontWeight: 700, color: '#000000', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', gap: '4px', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '3px 8px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+          <div style={{ display: 'flex', height: '28px', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '0 10px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
             <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Habits:</span>
             <span>{stats.total}</span>
           </div>
           
-          <div style={{ display: 'flex', gap: '4px', alignItems: 'center', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '3px 8px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+          <div style={{ display: 'flex', height: '28px', gap: '4px', alignItems: 'center', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '0 10px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
             <button className="calendar-nav-btn" onClick={() => setCollectiveDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))} style={{ padding: '1px', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <ChevronLeft size={10} />
             </button>
             <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>{currentMonthStats.monthName}:</span>
-            <span>{currentMonthStats.totalEarned}/{currentMonthStats.totalTarget} XP ({currentMonthStats.totalTarget > 0 ? Math.floor((currentMonthStats.totalEarned / currentMonthStats.totalTarget) * 100) : 0}%)</span>
+            <span>
+              {currentMonthStats.totalEarned}/{currentMonthStats.totalTarget} XP ({currentMonthStats.totalTarget > 0 ? Math.floor((currentMonthStats.totalEarned / currentMonthStats.totalTarget) * 100) : 0}%)
+              {(() => {
+                const diff = currentMonthStats.totalEarned - currentMonthStats.totalExpected;
+                if (diff === 0) return null;
+                return (
+                  <span style={{ marginLeft: '4px', color: diff >= 0 ? '#10b981' : '#ef4444', fontWeight: 800 }}>
+                    ({diff >= 0 ? `+${diff}` : `${diff}`})
+                  </span>
+                );
+              })()}
+            </span>
             <button className="calendar-nav-btn" onClick={() => setCollectiveDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))} style={{ padding: '1px', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <ChevronRight size={10} />
             </button>
           </div>
 
-          <div style={{ display: 'flex', gap: '4px', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '3px 8px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+          <div style={{ display: 'flex', height: '28px', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '0 10px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
             <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Today:</span>
             <span>{stats.completed}/{stats.total} (+{todayStats.totalXP} XP)</span>
           </div>
 
-          <div style={{ display: 'flex', gap: '4px', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '3px 8px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+          <div style={{ display: 'flex', height: '28px', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '0 10px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
             <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Avg:</span>
             <span>{stats.avgStreak}d</span>
           </div>
 
-          <div style={{ display: 'flex', gap: '4px', alignItems: 'center', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '3px 8px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+          <div style={{ display: 'flex', height: '28px', gap: '4px', alignItems: 'center', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '0 10px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
             <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Best:</span>
             <span>{stats.bestStreak}d</span>
             <Trophy size={10} style={{ color: '#f59e0b' }} />
           </div>
 
           {stats.extraWorkTodayXP > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', background: '#f5f7ff', border: '1px solid #e0e7ff', padding: '3px 8px', borderRadius: '100px', fontSize: '0.65rem', whiteSpace: 'nowrap' }}>
+            <div style={{ display: 'flex', height: '28px', alignItems: 'center', gap: '2px', background: '#f5f7ff', border: '1px solid #e0e7ff', padding: '0 10px', borderRadius: '100px', fontSize: '0.65rem', whiteSpace: 'nowrap' }}>
               <Flame size={10} style={{ color: '#6366f1' }} />
               <span style={{ color: '#4338ca', fontWeight: 800 }}>+{stats.extraWorkTodayXP} XP</span>
             </div>
           )}
           {todayBadge && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', background: 'linear-gradient(135deg, #fffbeb, #fef3c7)', border: '1px solid #fcd34d', padding: '3px 8px', borderRadius: '100px', fontSize: '0.65rem', whiteSpace: 'nowrap' }}>
+            <div style={{ display: 'flex', height: '28px', alignItems: 'center', gap: '2px', background: 'linear-gradient(135deg, #fffbeb, #fef3c7)', border: '1px solid #fcd34d', padding: '0 10px', borderRadius: '100px', fontSize: '0.65rem', whiteSpace: 'nowrap' }}>
               <Award size={10} style={{ color: '#f59e0b' }} />
               <span style={{ color: '#92400e', fontWeight: 800 }}>{todayBadge}</span>
             </div>
@@ -1082,9 +1093,10 @@ const SmartHabitTracker = () => {
               setFormData({ name: '', category: 'Health', priority: 'Medium', notes: '', color: '#4f46e5', activeDays: [0, 1, 2, 3, 4, 5, 6], allowExtraWork: true, manualTargets: {} });
               setShowAddModal(true);
             }}
+            title="New Habit"
+            style={{ width: '28px', padding: 0, justifyContent: 'center', boxShadow: 'none' }}
           >
             <Plus size={16} />
-            <span>New Habit</span>
           </button>
         </div>
       </header>
