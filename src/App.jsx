@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Moon, Award, Timer, Menu, X, Heart, Shield, Compass, Sparkles, RefreshCw } from 'lucide-react';
+import { Moon, Award, Timer, Menu, X, Heart, Shield, Compass, Sparkles, RefreshCw, CheckCircle2, Circle } from 'lucide-react';
 import SmartHabitTracker from './SmartHabitTracker';
 import SleepTracker from './SleepTracker';
 import TimeTracker from './TimeTracker';
@@ -9,12 +9,9 @@ function App() {
   const [activeTab, setActiveTab] = useState('habits');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Han Interactive Character State
-  const [capColor, setCapColor] = useState('#000000');
-  const [shirtColor, setShirtColor] = useState('none');
-  const [bodyColor, setBodyColor] = useState('url(#chrome)');
-  const [rotation, setRotation] = useState(0);
-  const [bubbleText, setBubbleText] = useState('Play with Han 🦖');
+  // Product Widget Preview State
+  const [previewMetric, setPreviewMetric] = useState('habits');
+  const [targetSlider, setTargetSlider] = useState(8); // e.g. Sleep target or Habit count
   const [karoMode, setKaroMode] = useState(true);
 
   const tabs = [
@@ -26,17 +23,12 @@ function App() {
   const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || SmartHabitTracker;
   const currentTitle = tabs.find(t => t.id === activeTab)?.description || '';
 
-  const handleCharacterClick = () => {
-    const messages = [
-      'Focus is your superpower! ⚡',
-      'Did you drink water today? 💧',
-      'Sleep is the ultimate recovery. 💤',
-      'Consistent habits build futures! 🏆',
-      'You are doing great, keep going! 🌟',
-      'Flow state: ON. 🎯'
-    ];
-    const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-    setBubbleText(randomMsg);
+  // Calculator helper based on target slider
+  const getSleepQuality = (hours) => {
+    if (hours < 6) return '58% - INSUFFICIENT';
+    if (hours < 8) return '82% - MODERATE';
+    if (hours === 8) return '96% - OPTIMAL';
+    return '92% - RESTED';
   };
 
   return (
@@ -69,7 +61,7 @@ function App() {
             SYNC
           </button>
           <button className="nav-action-pill bag-pill">
-            STATS — 0
+            STATS — 3
           </button>
           <button className="mobile-menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -133,95 +125,114 @@ function App() {
 
           <div className="hero-right">
             {/* Speech Bubble */}
-            <div className="speech-bubble" onClick={handleCharacterClick}>
-              {bubbleText}
+            <div className="speech-bubble">
+              ACTIVE METRICS ⚡
             </div>
 
-            {/* Han Interactive Character Container */}
+            {/* Interactive Product Metric Preview Card */}
             <div className="character-preview-card">
-              {/* Customizer Controls Side panel */}
+              {/* Metric selector controls */}
               <div className="character-controls">
                 <div className="control-group">
-                  <span className="control-label">cap</span>
-                  <div className="color-options">
-                    <button className={`color-dot ${capColor === 'none' ? 'active' : ''}`} style={{ backgroundColor: '#e5e7eb' }} onClick={() => setCapColor('none')} title="None" />
-                    <button className={`color-dot ${capColor === '#000000' ? 'active' : ''}`} style={{ backgroundColor: '#000000' }} onClick={() => setCapColor('#000000')} title="Black" />
-                    <button className={`color-dot ${capColor === '#ffffff' ? 'active' : ''}`} style={{ backgroundColor: '#ffffff', border: '1px solid #d1d5db' }} onClick={() => setCapColor('#ffffff')} title="White" />
-                  </div>
-                </div>
-
-                <div className="control-group">
-                  <span className="control-label">body</span>
-                  <div className="color-options">
-                    <button className={`color-dot ${bodyColor === 'url(#chrome)' ? 'active' : ''}`} style={{ background: 'linear-gradient(135deg, #fff, #999)' }} onClick={() => setBodyColor('url(#chrome)')} title="Chrome" />
-                    <button className={`color-dot ${bodyColor === '#000000' ? 'active' : ''}`} style={{ backgroundColor: '#000000' }} onClick={() => setBodyColor('#000000')} title="Dark" />
-                    <button className={`color-dot ${bodyColor === '#cbd5e1' ? 'active' : ''}`} style={{ backgroundColor: '#cbd5e1' }} onClick={() => setBodyColor('#cbd5e1')} title="Gray" />
+                  <span className="control-label">metric</span>
+                  <div className="metric-pill-controls">
+                    <button className={`metric-select-btn ${previewMetric === 'habits' ? 'active' : ''}`} onClick={() => { setPreviewMetric('habits'); setTargetSlider(3); }}>
+                      HABITS
+                    </button>
+                    <button className={`metric-select-btn ${previewMetric === 'sleep' ? 'active' : ''}`} onClick={() => { setPreviewMetric('sleep'); setTargetSlider(8); }}>
+                      SLEEP
+                    </button>
+                    <button className={`metric-select-btn ${previewMetric === 'flow' ? 'active' : ''}`} onClick={() => { setPreviewMetric('flow'); setTargetSlider(45); }}>
+                      FLOW
+                    </button>
                   </div>
                 </div>
               </div>
 
-              {/* Character Render Canvas */}
+              {/* Interactive Dynamic Graphic Render */}
               <div className="character-canvas">
-                <svg 
-                  viewBox="0 0 200 200" 
-                  className="han-svg" 
-                  style={{ transform: `rotate(${rotation}deg)` }}
-                  onClick={handleCharacterClick}
-                >
-                  <defs>
-                    {/* Metallic Silver/Chrome Gradient */}
-                    <linearGradient id="chrome" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#ffffff" />
-                      <stop offset="20%" stopColor="#e2e8f0" />
-                      <stop offset="40%" stopColor="#94a3b8" />
-                      <stop offset="60%" stopColor="#475569" />
-                      <stop offset="80%" stopColor="#cbd5e1" />
-                      <stop offset="100%" stopColor="#f8fafc" />
-                    </linearGradient>
-                    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-                      <feDropShadow dx="0" dy="8" stdDeviation="6" floodOpacity="0.08" />
-                    </filter>
-                  </defs>
-                  
-                  {/* Floating base platform shadow */}
-                  <ellipse cx="100" cy="170" rx="35" ry="8" fill="#e2e8f0" opacity="0.8" />
-                  
-                  {/* Han's Body Capsule */}
-                  <g filter="url(#shadow)">
-                    {/* Main Body */}
-                    <rect x="65" y="55" width="70" height="95" rx="35" fill={bodyColor} />
-                    
-                    {/* Cap overlay if selected */}
-                    {capColor !== 'none' && (
-                      <path d="M 62 65 C 62 40, 138 40, 138 65 Z" fill={capColor} />
-                    )}
+                {previewMetric === 'habits' && (
+                  <div className="preview-graphic-content">
+                    <div className="preview-habit-list">
+                      <div className="preview-habit-item done">
+                        <CheckCircle2 size={16} className="habit-check-icon" />
+                        <span>HYDRATION TARGET</span>
+                      </div>
+                      <div className="preview-habit-item done">
+                        <CheckCircle2 size={16} className="habit-check-icon" />
+                        <span>MEDITATION ROUTINE</span>
+                      </div>
+                      <div className="preview-habit-item done">
+                        <CheckCircle2 size={16} className="habit-check-icon" />
+                        <span>PHYSICAL WORKOUT</span>
+                      </div>
+                      <div className={`preview-habit-item ${targetSlider >= 4 ? 'done' : ''}`}>
+                        {targetSlider >= 4 ? <CheckCircle2 size={16} className="habit-check-icon" /> : <Circle size={16} />}
+                        <span>DEEP WORK SESSION</span>
+                      </div>
+                    </div>
+                    <span className="graphic-subtitle">STREAK SCORE: {targetSlider * 25}%</span>
+                  </div>
+                )}
 
-                    {/* Cute Big Eyes */}
-                    <circle cx="88" cy="85" r="7" fill="#0f172a" />
-                    <circle cx="86" cy="83" r="2" fill="#ffffff" />
-                    
-                    <circle cx="112" cy="85" r="7" fill="#0f172a" />
-                    <circle cx="110" cy="83" r="2" fill="#ffffff" />
+                {previewMetric === 'sleep' && (
+                  <div className="preview-graphic-content">
+                    {/* Minimal Sleep Wave Path */}
+                    <svg viewBox="0 0 160 80" className="sleep-wave-svg">
+                      {/* Grid lines */}
+                      <line x1="0" y1="40" x2="160" y2="40" stroke="#e5e7eb" strokeDasharray="3,3" />
+                      {/* Recovery Sine path */}
+                      <path 
+                        d={`M 0 40 Q 20 ${40 - (targetSlider * 3.5)} 40 40 T 80 40 T 120 40 T 160 40`} 
+                        fill="none" 
+                        stroke="#000000" 
+                        strokeWidth="3" 
+                      />
+                      <circle cx="40" cy="40" r="4" fill="#000000" />
+                      <circle cx="120" cy="40" r="4" fill="#000000" />
+                    </svg>
+                    <span className="graphic-subtitle">RECOVERY: {getSleepQuality(targetSlider)}</span>
+                  </div>
+                )}
 
-                    {/* Cute mouth */}
-                    <path d="M 96 95 Q 100 98, 104 95" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" fill="none" />
-
-                    {/* Left Arm */}
-                    <path d="M 58 100 C 48 100, 48 112, 58 112" stroke={bodyColor} strokeWidth="12" strokeLinecap="round" />
-                    {/* Right Arm */}
-                    <path d="M 142 100 C 152 100, 152 112, 142 112" stroke={bodyColor} strokeWidth="12" strokeLinecap="round" />
-                  </g>
-                </svg>
+                {previewMetric === 'flow' && (
+                  <div className="preview-graphic-content">
+                    {/* Rotating Concentric Focus Target */}
+                    <div className="preview-dial-container">
+                      <svg viewBox="0 0 100 100" className="dial-svg">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e5e5" strokeWidth="2" />
+                        <circle 
+                          cx="50" 
+                          cy="50" 
+                          r="30" 
+                          fill="none" 
+                          stroke="#000000" 
+                          strokeWidth="3" 
+                          strokeDasharray="188" 
+                          strokeDashoffset={188 - (targetSlider * 1.5)} 
+                        />
+                        <circle cx="50" cy="50" r="6" fill="#000000" />
+                      </svg>
+                    </div>
+                    <span className="graphic-subtitle">FOCUS PROTOCOL: {targetSlider} MINS</span>
+                  </div>
+                )}
               </div>
 
-              {/* Slider for rotation */}
+              {/* Slider for interactive metric customization */}
               <div className="character-slider-container">
+                <span className="slider-value-label">
+                  {previewMetric === 'habits' && `Completed: ${targetSlider}/4`}
+                  {previewMetric === 'sleep' && `Duration: ${targetSlider}h`}
+                  {previewMetric === 'flow' && `Session: ${targetSlider}m`}
+                </span>
                 <input 
                   type="range" 
-                  min="-45" 
-                  max="45" 
-                  value={rotation} 
-                  onChange={(e) => setRotation(parseInt(e.target.value))} 
+                  min={previewMetric === 'habits' ? '3' : previewMetric === 'sleep' ? '5' : '15'} 
+                  max={previewMetric === 'habits' ? '4' : previewMetric === 'sleep' ? '10' : '90'} 
+                  step="1"
+                  value={targetSlider} 
+                  onChange={(e) => setTargetSlider(parseInt(e.target.value))} 
                   className="character-slider" 
                 />
               </div>

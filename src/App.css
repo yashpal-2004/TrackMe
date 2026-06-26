@@ -310,7 +310,7 @@
 .control-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .control-label {
@@ -321,25 +321,29 @@
   letter-spacing: 0.05em;
 }
 
-.color-options {
+.metric-pill-controls {
   display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.color-dot {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
+.metric-select-btn {
+  background: transparent;
   border: 1.5px solid #000000;
+  border-radius: 100px;
+  color: #000000;
+  padding: 6px 14px;
+  font-size: 0.7rem;
+  font-weight: 800;
   cursor: pointer;
-  padding: 0;
-  transition: transform 0.15s ease;
+  width: 84px;
+  text-align: center;
+  transition: all 0.2s ease;
 }
 
-.color-dot.active {
-  transform: scale(1.2);
-  outline: 2px solid #000000;
-  outline-offset: 2px;
+.metric-select-btn.active {
+  background-color: #000000;
+  color: #ffffff;
 }
 
 .character-canvas {
@@ -350,27 +354,88 @@
   height: 100%;
 }
 
-.han-svg {
+.preview-graphic-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  max-width: 190px;
-  height: auto;
-  cursor: pointer;
-  animation: floatHan 4s ease-in-out infinite;
-  transition: transform 0.15s ease-out;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
-@keyframes floatHan {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+.preview-habit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  width: 100%;
+  padding-left: 20px;
+}
+
+.preview-habit-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #a3a3a3;
+  text-transform: uppercase;
+}
+
+.preview-habit-item.done {
+  color: #000000;
+}
+
+.habit-check-icon {
+  color: #000000;
+}
+
+.graphic-subtitle {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #000000;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.sleep-wave-svg {
+  width: 130px;
+  height: auto;
+}
+
+.preview-dial-container {
+  width: 70px;
+  height: 70px;
+  animation: spinDial 25s linear infinite;
+}
+
+@keyframes spinDial {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.dial-svg {
+  width: 100%;
+  height: 100%;
 }
 
 .character-slider-container {
   position: absolute;
-  bottom: 20px;
+  bottom: 12px;
   left: 24px;
   right: 24px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.slider-value-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #000000;
+  text-transform: uppercase;
 }
 
 .character-slider {
@@ -386,11 +451,11 @@
 .character-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: #ffffff;
-  border: 2px solid #000000;
+  border: 1.5px solid #000000;
   cursor: pointer;
   transition: transform 0.1s ease;
 }
