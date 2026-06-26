@@ -35,15 +35,9 @@
 
 body {
   font-family: var(--font-family);
-  background: var(--bg-color);
-  color: var(--text-main);
+  background: #ffffff;
+  color: #000000;
   width: 100%;
-  /* Soft mesh gradient background */
-  background-image:
-    radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(124, 58, 237, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.05) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
 }
 
 #root {

@@ -10,11 +10,12 @@ function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Han Interactive Character State
-  const [capColor, setCapColor] = useState('#ff6b35');
-  const [shirtColor, setShirtColor] = useState('#8b5cf6');
-  const [bodyColor, setBodyColor] = useState('#ffffff');
+  const [capColor, setCapColor] = useState('#000000');
+  const [shirtColor, setShirtColor] = useState('none');
+  const [bodyColor, setBodyColor] = useState('url(#chrome)');
   const [rotation, setRotation] = useState(0);
   const [bubbleText, setBubbleText] = useState('Play with Han 🦖');
+  const [karoMode, setKaroMode] = useState(true);
 
   const tabs = [
     { id: 'habits', name: 'Habits', icon: Award, component: SmartHabitTracker, description: 'Smart Habit Tracker' },
@@ -39,29 +40,21 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${karoMode ? 'karo-theme' : ''}`}>
       {/* Top Navbar */}
       <header className="navbar">
         <div className="nav-brand">
-          <div className="brand-logo-black">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-            </svg>
-          </div>
-          <div className="brand-text">
-            <h2>TrackMe</h2>
-            <span>Creative Optimizer</span>
-          </div>
+          <span className="brand-logo-text">TRACKME☺</span>
         </div>
 
-        {/* Desktop Tabs */}
+        {/* Center Tabs - Styled as Pill Outlines */}
         <nav className="nav-links">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
-                className={`nav-tab-btn ${isActive ? 'active' : ''}`}
+                className={`nav-tab-pill ${isActive ? 'active' : ''}`}
                 onClick={() => setActiveTab(tab.id)}
               >
                 {tab.name}
@@ -72,8 +65,11 @@ function App() {
 
         {/* Right Actions */}
         <div className="nav-actions">
-          <button className="nav-sync-btn" onClick={() => alert('Syncing local caches with Firebase Cloud Store!')}>
-            Sync Hub
+          <button className="nav-action-pill" onClick={() => alert('Syncing local caches with Firebase Cloud Store!')}>
+            SYNC
+          </button>
+          <button className="nav-action-pill bag-pill">
+            STATS — 0
           </button>
           <button className="mobile-menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -100,7 +96,7 @@ function App() {
             alert('Syncing caches...');
             setMobileMenuOpen(false);
           }}>
-            Sync Hub
+            SYNC
           </button>
         </div>
       )}
@@ -110,19 +106,28 @@ function App() {
         <div className="hero-content">
           <div className="hero-left">
             <div className="hero-title-group">
-              <h1 className="hero-title-item">Track.</h1>
-              <h1 className="hero-title-item">Optimize.</h1>
-              <h1 className="hero-title-item">Perform.</h1>
+              <div className="title-row">
+                <h1 className="hero-title-item font-large">Studio</h1>
+                <span className="year-marker">( 2026 )</span>
+              </div>
+              <div className="title-row">
+                <h1 className="hero-title-item font-large">TRACKME</h1>
+              </div>
             </div>
-            
-            <div className="hero-tags">
-              <span>HABITS</span>
-              <span>REST</span>
-              <span>FLOW STATE</span>
-              <span>ANALYTICS</span>
-              <span>CREATIVE</span>
-              <span>STUDIO</span>
-              <span>OFFLINE SYNC</span>
+
+            <div className="hero-info-section">
+              <span className="est-marker">( EST. 2026 )</span>
+              
+              <h2 className="hero-karo-desc">
+                TRACKME IS A PREMIUM PRODUCTIVITY & HEALTH WIDGET BUILT TO OPTIMIZE YOUR LIFE.
+              </h2>
+              <p className="hero-karo-sub">
+                TRACKME IS NONTRADITIONAL. TRACKME IS A UNIFICATION OF HABITS, SLEEP PROTOCOLS, FOCUS PROTOCOLS & OFFLINE CACHES.
+              </p>
+
+              <button className="karo-shop-btn" onClick={() => setActiveTab('habits')}>
+                TRACK ☺
+              </button>
             </div>
           </div>
 
@@ -140,33 +145,22 @@ function App() {
                   <span className="control-label">cap</span>
                   <div className="color-options">
                     <button className={`color-dot ${capColor === 'none' ? 'active' : ''}`} style={{ backgroundColor: '#e5e7eb' }} onClick={() => setCapColor('none')} title="None" />
-                    <button className={`color-dot ${capColor === '#ff6b35' ? 'active' : ''}`} style={{ backgroundColor: '#ff6b35' }} onClick={() => setCapColor('#ff6b35')} title="Orange" />
-                    <button className={`color-dot ${capColor === '#10b981' ? 'active' : ''}`} style={{ backgroundColor: '#10b981' }} onClick={() => setCapColor('#10b981')} title="Green" />
-                    <button className={`color-dot ${capColor === '#3b82f6' ? 'active' : ''}`} style={{ backgroundColor: '#3b82f6' }} onClick={() => setCapColor('#3b82f6')} title="Blue" />
-                  </div>
-                </div>
-
-                <div className="control-group">
-                  <span className="control-label">shirt</span>
-                  <div className="color-options">
-                    <button className={`color-dot ${shirtColor === 'none' ? 'active' : ''}`} style={{ backgroundColor: '#e5e7eb' }} onClick={() => setShirtColor('none')} title="None" />
-                    <button className={`color-dot ${shirtColor === '#f59e0b' ? 'active' : ''}`} style={{ backgroundColor: '#f59e0b' }} onClick={() => setShirtColor('#f59e0b')} title="Yellow" />
-                    <button className={`color-dot ${shirtColor === '#8b5cf6' ? 'active' : ''}`} style={{ backgroundColor: '#8b5cf6' }} onClick={() => setShirtColor('#8b5cf6')} title="Purple" />
-                    <button className={`color-dot ${shirtColor === '#ec4899' ? 'active' : ''}`} style={{ backgroundColor: '#ec4899' }} onClick={() => setShirtColor('#ec4899')} title="Pink" />
+                    <button className={`color-dot ${capColor === '#000000' ? 'active' : ''}`} style={{ backgroundColor: '#000000' }} onClick={() => setCapColor('#000000')} title="Black" />
+                    <button className={`color-dot ${capColor === '#ffffff' ? 'active' : ''}`} style={{ backgroundColor: '#ffffff', border: '1px solid #d1d5db' }} onClick={() => setCapColor('#ffffff')} title="White" />
                   </div>
                 </div>
 
                 <div className="control-group">
                   <span className="control-label">body</span>
                   <div className="color-options">
-                    <button className={`color-dot ${bodyColor === '#ffffff' ? 'active' : ''}`} style={{ backgroundColor: '#ffffff', border: '1px solid #d1d5db' }} onClick={() => setBodyColor('#ffffff')} title="White" />
+                    <button className={`color-dot ${bodyColor === 'url(#chrome)' ? 'active' : ''}`} style={{ background: 'linear-gradient(135deg, #fff, #999)' }} onClick={() => setBodyColor('url(#chrome)')} title="Chrome" />
+                    <button className={`color-dot ${bodyColor === '#000000' ? 'active' : ''}`} style={{ backgroundColor: '#000000' }} onClick={() => setBodyColor('#000000')} title="Dark" />
                     <button className={`color-dot ${bodyColor === '#cbd5e1' ? 'active' : ''}`} style={{ backgroundColor: '#cbd5e1' }} onClick={() => setBodyColor('#cbd5e1')} title="Gray" />
-                    <button className={`color-dot ${bodyColor === '#fed7aa' ? 'active' : ''}`} style={{ backgroundColor: '#fed7aa' }} onClick={() => setBodyColor('#fed7aa')} title="Peach" />
                   </div>
                 </div>
               </div>
 
-              {/* Character Render Container */}
+              {/* Character Render Canvas */}
               <div className="character-canvas">
                 <svg 
                   viewBox="0 0 200 200" 
@@ -175,6 +169,15 @@ function App() {
                   onClick={handleCharacterClick}
                 >
                   <defs>
+                    {/* Metallic Silver/Chrome Gradient */}
+                    <linearGradient id="chrome" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#ffffff" />
+                      <stop offset="20%" stopColor="#e2e8f0" />
+                      <stop offset="40%" stopColor="#94a3b8" />
+                      <stop offset="60%" stopColor="#475569" />
+                      <stop offset="80%" stopColor="#cbd5e1" />
+                      <stop offset="100%" stopColor="#f8fafc" />
+                    </linearGradient>
                     <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
                       <feDropShadow dx="0" dy="8" stdDeviation="6" floodOpacity="0.08" />
                     </filter>
@@ -185,31 +188,20 @@ function App() {
                   
                   {/* Han's Body Capsule */}
                   <g filter="url(#shadow)">
-                    {/* Main White/Colored Body */}
+                    {/* Main Body */}
                     <rect x="65" y="55" width="70" height="95" rx="35" fill={bodyColor} />
                     
-                    {/* Shirt overlay if selected */}
-                    {shirtColor !== 'none' && (
-                      <path d="M 65 110 A 5 5 0 0 0 65 115 L 65 125 C 65 140 135 140 135 125 L 135 115 A 5 5 0 0 0 135 110 Z" fill={shirtColor} />
-                    )}
-
                     {/* Cap overlay if selected */}
                     {capColor !== 'none' && (
                       <path d="M 62 65 C 62 40, 138 40, 138 65 Z" fill={capColor} />
                     )}
 
                     {/* Cute Big Eyes */}
-                    {/* Left Eye */}
                     <circle cx="88" cy="85" r="7" fill="#0f172a" />
                     <circle cx="86" cy="83" r="2" fill="#ffffff" />
                     
-                    {/* Right Eye */}
                     <circle cx="112" cy="85" r="7" fill="#0f172a" />
                     <circle cx="110" cy="83" r="2" fill="#ffffff" />
-
-                    {/* Blush cheeks */}
-                    <circle cx="78" cy="94" r="4" fill="#fca5a5" opacity="0.6" />
-                    <circle cx="122" cy="94" r="4" fill="#fca5a5" opacity="0.6" />
 
                     {/* Cute mouth */}
                     <path d="M 96 95 Q 100 98, 104 95" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" fill="none" />
@@ -237,11 +229,17 @@ function App() {
           </div>
         </div>
 
-        {/* Scalloped divider wave */}
-        <div className="scallop-divider">
-          <svg viewBox="0 0 1440 24" preserveAspectRatio="none">
-            <path d="M0,24 Q 15,0 30,24 T 60,24 T 90,24 T 120,24 T 150,24 T 180,24 T 210,24 T 240,24 T 270,24 T 300,24 T 330,24 T 360,24 T 390,24 T 420,24 T 450,24 T 480,24 T 510,24 T 540,24 T 570,24 T 600,24 T 630,24 T 660,24 T 690,24 T 720,24 T 750,24 T 780,24 T 810,24 T 840,24 T 870,24 T 900,24 T 930,24 T 960,24 T 990,24 T 1020,24 T 1050,24 T 1080,24 T 1110,24 T 1140,24 T 1170,24 T 1200,24 T 1230,24 T 1260,24 T 1290,24 T 1320,24 T 1350,24 T 1380,24 T 1410,24 T 1440,24 L 1440,24 L 0,24 Z" fill="#ffffff" />
-          </svg>
+        {/* Footnote Row at bottom of hero */}
+        <div className="hero-footnote-row">
+          <div className="footnote-left">
+            <span>[ I live in my head ——— You live there too ]</span>
+          </div>
+          <div className="footnote-right">
+            <button className="karo-mode-toggle" onClick={() => setKaroMode(!karoMode)}>
+              <span className={`karo-mode-dot ${karoMode ? 'active' : ''}`} />
+              <span>TRACKME MODE</span>
+            </button>
+          </div>
         </div>
       </section>
 
