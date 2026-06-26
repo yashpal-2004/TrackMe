@@ -991,13 +991,7 @@ const SmartHabitTracker = () => {
             <Zap size={16} fill="white" />
             <span className="xp-val">{currentMonthStats.totalEarned || 0} {currentMonthStats.monthName.split(' ')[0].toUpperCase()} XP</span>
           </div>
-          <button
-            className={`action-btn ${notificationsEnabled ? 'active' : ''}`}
-            onClick={notificationsEnabled ? () => setNotificationsEnabled(false) : requestNotificationPermission}
-            title={notificationsEnabled ? "Disable Notifications" : "Enable Notifications"}
-          >
-            {notificationsEnabled ? <Bell size={20} /> : <BellOff size={20} />}
-          </button>
+
           <button
             className="action-btn"
             onClick={() => setSortBy(prev => {
