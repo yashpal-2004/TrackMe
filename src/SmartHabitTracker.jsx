@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
   MoreVertical,
+  ArrowUpDown,
   Bell,
   BellOff,
   Star,
@@ -794,69 +795,15 @@ const SmartHabitTracker = () => {
 
     return (
       <div key={habit.id} className={`habit-card ${isArchived ? 'archived' : ''}`} style={{ '--habit-color': habit.color, '--habit-glow': `${habit.color}20`, opacity: isArchived ? 0.75 : 1 }}>
-        <div className="habit-info-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', marginBottom: '12px' }}>
-          <div className="habit-title-group" style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="habit-category" style={{ background: `${habit.color}15`, color: habit.color }}>
-                {habit.category}
-              </span>
-              {isArchived && <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>ARCHIVED</span>}
-            </div>
-            <h3 className="habit-name">{habit.name}</h3>
-            {habitXpMap[habit.id]?.monthTarget > 0 && (
-              <div className="monthly-target-info">
-                <div className="target-progress-row">
-                  <span className="target-val" style={{ display: 'flex', alignItems: 'baseline', gap: '4px', flexWrap: 'wrap' }}>
-                    {habitViewDates[habit.id]?.toLocaleString('default', { month: 'short' }) || new Date().toLocaleString('default', { month: 'short' })}: {habitXpMap[habit.id]?.monthTotal || 0} / {habitXpMap[habit.id]?.monthTarget} XP
-                  </span>
-                  <span className="target-pct">{Math.floor(((habitXpMap[habit.id]?.monthTotal || 0) / habitXpMap[habit.id]?.monthTarget) * 100)}%</span>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px', flexWrap: 'wrap', gap: '4px' }}>
-                  <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>
-                    Expected: {habitXpMap[habit.id]?.monthExpected || 0} XP
-                  </div>
-                  {(() => {
-                    const diff = (habitXpMap[habit.id]?.monthTotal || 0) - (habitXpMap[habit.id]?.monthExpected || 0);
-                    return (
-                      <div style={{
-                        fontSize: '0.6rem',
-                        fontWeight: 800,
-                        color: diff >= 0 ? '#10b981' : '#f59e0b',
-                        padding: '2px 6px',
-                        background: diff >= 0 ? '#f0fdf4' : '#fffbeb',
-                        borderRadius: '4px',
-                        textAlign: 'right'
-                      }}>
-                        {diff >= 0 ? `Ahead by ${diff}` : `Behind by ${Math.abs(diff)}`} XP ({Math.floor((Math.abs(diff) / (habitXpMap[habit.id]?.monthTarget || 1)) * 100)}%)
-                      </div>
-                    );
-                  })()}
-                </div>
-
-                <div className="target-mini-bar">
-                  <div
-                    className="target-expected-fill"
-                    style={{ width: `${Math.min(100, ((habitXpMap[habit.id]?.monthExpected || 0) / habitXpMap[habit.id]?.monthTarget) * 100)}%` }}
-                  />
-                  <div
-                    className="target-expected-indicator"
-                    style={{ left: `${Math.min(100, ((habitXpMap[habit.id]?.monthExpected || 0) / habitXpMap[habit.id]?.monthTarget) * 100)}%` }}
-                  />
-                  <div
-                    className="target-mini-fill"
-                    style={{
-                      width: `${Math.min(100, ((habitXpMap[habit.id]?.monthTotal || 0) / habitXpMap[habit.id]?.monthTarget) * 100)}%`,
-                      backgroundColor: habit.color,
-                      position: 'relative',
-                      zIndex: 2
-                    }}
-                  />
-                </div>
-              </div>
-            )}
+        {/* Row 1: Category Badge & Actions */}
+        <div className="habit-card-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="habit-category" style={{ background: `${habit.color}15`, color: habit.color }}>
+              {habit.category}
+            </span>
+            {isArchived && <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>ARCHIVED</span>}
           </div>
-          <div className="habit-actions" style={{ flexWrap: 'wrap', justifyContent: 'flex-end', gap: '6px' }}>
+          <div className="habit-actions" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
             <div className="habit-xp-group">
               <div className="habit-xp-badge base" title="Base XP (10 per day)">
                 <Check size={10} />
@@ -872,11 +819,11 @@ const SmartHabitTracker = () => {
                 setSelectedHabitForExtra(habit);
                 setShowExtraWorkModal(true);
               }} title="Log Extra Effort">
-                <Zap size={16} style={{ color: habit.color }} />
+                <Zap size={13} style={{ color: habit.color }} />
               </button>
             )}
             <button className="action-btn" onClick={() => setDetailHabit(habit)} title="View Detailed Analytics">
-              <TrendingUp size={16} />
+              <TrendingUp size={13} />
             </button>
             <button className="action-btn" onClick={() => {
               const viewDate = habitViewDates[habit.id] || new Date();
@@ -899,16 +846,56 @@ const SmartHabitTracker = () => {
               setEditingHabit(habit);
               setShowAddModal(true);
             }} title="Edit Habit">
-              <Edit2 size={16} />
+              <Edit2 size={13} />
             </button>
             <button className="action-btn" onClick={() => toggleArchiveHabit(habit)} title={isArchived ? "Unarchive Habit" : "Archive Habit"}>
-              {isArchived ? <RotateCcw size={16} /> : <Archive size={16} />}
+              {isArchived ? <RotateCcw size={13} /> : <Archive size={13} />}
             </button>
             <button className="action-btn" onClick={() => deleteHabit(habit.id)} title="Delete Habit">
-              <Trash2 size={16} />
+              <Trash2 size={13} />
             </button>
           </div>
         </div>
+
+        {/* Row 2: Habit Name */}
+        <h3 className="habit-name" style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-main)', margin: '0 0 8px 0', wordBreak: 'break-word', width: '100%' }}>
+          {habit.name}
+        </h3>
+
+        {/* Row 3: Monthly Target Info */}
+        {habitXpMap[habit.id]?.monthTarget > 0 && (
+          <div className="monthly-target-info" style={{ marginTop: '0px', marginBottom: '10px' }}>
+            <div className="target-progress-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+              <span className="target-val" style={{ display: 'flex', alignItems: 'baseline', gap: '2px', whiteSpace: 'nowrap', fontSize: '0.68rem' }}>
+                {habitViewDates[habit.id]?.toLocaleString('default', { month: 'short' }) || new Date().toLocaleString('default', { month: 'short' })}: {habitXpMap[habit.id]?.monthTotal || 0}/{habitXpMap[habit.id]?.monthTarget} XP
+              </span>
+              <span className="target-pct" style={{ whiteSpace: 'nowrap' }}>{Math.floor(((habitXpMap[habit.id]?.monthTotal || 0) / habitXpMap[habit.id]?.monthTarget) * 100)}%</span>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', gap: '8px' }}>
+              <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                Expected: {habitXpMap[habit.id]?.monthExpected || 0} XP
+              </div>
+              {(() => {
+                const diff = (habitXpMap[habit.id]?.monthTotal || 0) - (habitXpMap[habit.id]?.monthExpected || 0);
+                return (
+                  <div style={{
+                    fontSize: '0.6rem',
+                    fontWeight: 800,
+                    color: diff >= 0 ? '#10b981' : '#f59e0b',
+                    padding: '2px 6px',
+                    background: diff >= 0 ? '#f0fdf4' : '#fffbeb',
+                    borderRadius: '4px',
+                    textAlign: 'right',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {diff >= 0 ? `+${diff}` : `${diff}`} XP ({Math.floor((Math.abs(diff) / (habitXpMap[habit.id]?.monthTarget || 1)) * 100)}%)
+                  </div>
+                );
+              })()}
+            </div>                
+          </div>
+        )}
 
         <div className="habit-main">
           <div className="streak-badges">
@@ -925,22 +912,22 @@ const SmartHabitTracker = () => {
             {!(habit.activeDays || [0, 1, 2, 3, 4, 5, 6]).includes(new Date(currentDate).getDay()) ? (
               <div className="rest-day-notice">
                 <span className="rest-lbl">REST DAY</span>
-                <CalendarIcon size={16} />
+                <CalendarIcon size={14} />
               </div>
             ) : (
               <button
                 className={`habit-check-btn ${checkedToday ? 'checked' : ''}`}
                 onClick={() => toggleHabit(habit, checkedToday)}
               >
-                <Check size={28} />
+                <Check size={18} />
               </button>
             )}
           </div>
         </div>
 
         {habit.notes && (
-          <div className="habit-notes" style={{ fontSize: '0.85rem', color: 'var(--text-muted)', borderTop: '1px solid #f3f4f6', paddingTop: '12px', marginTop: '8px' }}>
-            <MessageSquare size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+          <div className="habit-notes" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', borderTop: '1px solid #f3f4f6', paddingTop: '12px', marginTop: '8px' }}>
+            <MessageSquare size={12} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
             {habit.notes}
           </div>
         )}
@@ -952,7 +939,7 @@ const SmartHabitTracker = () => {
           </div>
           <div className="last-sync">
             <Clock size={12} style={{ marginRight: '4px' }} />
-            {habit.lastCheckedDate ? `Last: ${habit.lastCheckedDate}` : 'No history yet'}
+            {habit.lastCheckedDate ? `Last: ${habit.lastCheckedDate}` : 'No history'}
           </div>
         </div>
 
@@ -981,126 +968,60 @@ const SmartHabitTracker = () => {
 
   return (
     <div className="habit-tracker-container">
-      <header className="habit-header">
-        <div className="habit-stats-overview">
-          <div className="stat-card">
-            <span className="label">Total Habits</span>
-            <span className="value">{stats.total}</span>
-          </div>
-          <div className="stat-card" style={{ flex: '1.8', display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: '220px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', gap: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <button className="calendar-nav-btn" onClick={() => setCollectiveDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}>
-                  <ChevronLeft size={14} />
-                </button>
-                <span className="label" style={{ color: 'var(--text-main)', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>{currentMonthStats.monthName}</span>
-                <button className="calendar-nav-btn" onClick={() => setCollectiveDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))}>
-                  <ChevronRight size={14} />
-                </button>
-              </div>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
-                {currentMonthStats.extraWorkCount} Extra (+{currentMonthStats.totalExtraXP} XP)
-              </div>
-            </div>
+      <header className="habit-header" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '16px', flexWrap: 'wrap', paddingBottom: '16px', borderBottom: '1.5px solid #000000', marginBottom: '32px' }}>
+        <div className="meta-text" style={{ flexShrink: 0 }}>
+          <span className="meta-tag">TRACKME METRICS</span>
+          <h2 className="meta-title" style={{ fontSize: '1.5rem', fontWeight: 900, textTransform: 'uppercase', margin: 0, letterSpacing: '-0.02em', color: '#000000' }}>Smart Habit Tracker</h2>
+        </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '6px', gap: '8px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', whiteSpace: 'nowrap' }}>
-                  <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-main)' }}>{currentMonthStats.totalEarned}</span>
-                  <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>/ {currentMonthStats.totalTarget} XP</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>
-                    Expected: {currentMonthStats.totalExpected} XP
-                  </div>
-                  {(() => {
-                    const diff = currentMonthStats.totalEarned - currentMonthStats.totalExpected;
-                    return (
-                      <div style={{
-                        fontSize: '0.68rem',
-                        fontWeight: 800,
-                        color: diff >= 0 ? '#10b981' : '#f59e0b',
-                        padding: '1px 5px',
-                        background: diff >= 0 ? '#f0fdf4' : '#fffbeb',
-                        borderRadius: '4px',
-                        whiteSpace: 'nowrap'
-                      }}>
-                        {diff >= 0 ? `+${diff}` : `${diff}`} XP ({currentMonthStats.totalTarget > 0 ? Math.floor((Math.abs(diff) / currentMonthStats.totalTarget) * 100) : 0}%)
-                      </div>
-                    );
-                  })()}
-                </div>
-              </div>
-              <span style={{ fontSize: '1.15rem', fontWeight: 900, color: 'var(--primary)', whiteSpace: 'nowrap' }}>
-                {currentMonthStats.totalTarget > 0 ? Math.floor((currentMonthStats.totalEarned / currentMonthStats.totalTarget) * 100) : 0}%
-              </span>
-            </div>
+        <div className="habit-stats-overview" style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center', flex: 1, justifyContent: 'center', minWidth: 0, fontSize: '0.68rem', fontWeight: 700, color: '#000000', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '4px', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '3px 8px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+            <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Habits:</span>
+            <span>{stats.total}</span>
+          </div>
+          
+          <div style={{ display: 'flex', gap: '4px', alignItems: 'center', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '3px 8px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+            <button className="calendar-nav-btn" onClick={() => setCollectiveDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))} style={{ padding: '1px', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <ChevronLeft size={10} />
+            </button>
+            <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>{currentMonthStats.monthName}:</span>
+            <span>{currentMonthStats.totalEarned}/{currentMonthStats.totalTarget} XP ({currentMonthStats.totalTarget > 0 ? Math.floor((currentMonthStats.totalEarned / currentMonthStats.totalTarget) * 100) : 0}%)</span>
+            <button className="calendar-nav-btn" onClick={() => setCollectiveDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))} style={{ padding: '1px', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <ChevronRight size={10} />
+            </button>
+          </div>
 
-            <div className="target-mini-bar" style={{ height: '8px', background: '#f1f5f9', marginTop: '4px' }}>
-              <div
-                className="target-expected-fill"
-                style={{ width: `${currentMonthStats.totalTarget > 0 ? Math.min(100, (currentMonthStats.totalExpected / currentMonthStats.totalTarget) * 100) : 0}%` }}
-              />
-              <div
-                className="target-expected-indicator"
-                style={{ left: `${currentMonthStats.totalTarget > 0 ? Math.min(100, (currentMonthStats.totalExpected / currentMonthStats.totalTarget) * 100) : 0}%`, height: '100%' }}
-              />
-              <div
-                className="target-mini-fill"
-                style={{
-                  width: `${currentMonthStats.totalTarget > 0 ? Math.min(100, (currentMonthStats.totalEarned / currentMonthStats.totalTarget) * 100) : 0}%`,
-                  backgroundColor: 'var(--primary)',
-                  borderRadius: '10px',
-                  position: 'relative',
-                  zIndex: 2
-                }}
-              />
-            </div>
+          <div style={{ display: 'flex', gap: '4px', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '3px 8px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+            <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Today:</span>
+            <span>{stats.completed}/{stats.total} (+{todayStats.totalXP} XP)</span>
           </div>
-          <div className="stat-card">
-            <span className="label">Today's Progress</span>
-            <span className="value">{stats.completed} / {stats.total}</span>
-            <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: 700, marginTop: '-4px' }}>
-              +{todayStats.totalXP} XP Today
-            </div>
-            <div className="progress-bar-container">
-              <div
-                className="progress-bar-fill"
-                style={{ width: `${stats.total > 0 ? (stats.completed / stats.total) * 100 : 0}%` }}
-              ></div>
-            </div>
+
+          <div style={{ display: 'flex', gap: '4px', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '3px 8px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+            <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Avg:</span>
+            <span>{stats.avgStreak}d</span>
           </div>
-          <div className="stat-card">
-            <span className="label">Average Streak</span>
-            <span className="value">{stats.avgStreak}</span>
+
+          <div style={{ display: 'flex', gap: '4px', alignItems: 'center', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '3px 8px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+            <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Best:</span>
+            <span>{stats.bestStreak}d</span>
+            <Trophy size={10} style={{ color: '#f59e0b' }} />
           </div>
-          <div className="stat-card">
-            <span className="label">Best Streak</span>
-            <span className="value">{stats.bestStreak} <Trophy size={16} style={{ color: '#f59e0b', verticalAlign: 'middle' }} /></span>
-          </div>
+
           {stats.extraWorkTodayXP > 0 && (
-            <div className="stat-card" style={{ background: '#f5f7ff', border: '1px solid #e0e7ff' }}>
-              <span className="label" style={{ color: '#4338ca' }}>Today's Grind</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Flame className="text-indigo-600" size={24} />
-                <span className="value" style={{ color: '#4338ca' }}>+{stats.extraWorkTodayXP} XP</span>
-              </div>
-              <span style={{ fontSize: '0.7rem', color: '#6366f1', fontWeight: 600 }}>Bonus from extra efforts!</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', background: '#f5f7ff', border: '1px solid #e0e7ff', padding: '3px 8px', borderRadius: '100px', fontSize: '0.65rem', whiteSpace: 'nowrap' }}>
+              <Flame size={10} style={{ color: '#6366f1' }} />
+              <span style={{ color: '#4338ca', fontWeight: 800 }}>+{stats.extraWorkTodayXP} XP</span>
             </div>
           )}
           {todayBadge && (
-            <div className="stat-card" style={{ background: 'linear-gradient(135deg, #fffbeb, #fef3c7)', border: '1px solid #fcd34d' }}>
-              <span className="label" style={{ color: '#92400e' }}>Daily Award</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Award className="text-amber-500" size={24} />
-                <span className="value" style={{ color: '#92400e', fontSize: '1.2rem' }}>{todayBadge}</span>
-              </div>
-              <span style={{ fontSize: '0.7rem', color: '#b45309', fontWeight: 600 }}>Earned for 2x productivity!</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', background: 'linear-gradient(135deg, #fffbeb, #fef3c7)', border: '1px solid #fcd34d', padding: '3px 8px', borderRadius: '100px', fontSize: '0.65rem', whiteSpace: 'nowrap' }}>
+              <Award size={10} style={{ color: '#f59e0b' }} />
+              <span style={{ color: '#92400e', fontWeight: 800 }}>{todayBadge}</span>
             </div>
           )}
         </div>
 
-        <div className="habit-controls">
+        <div className="habit-controls" style={{ flexShrink: 0 }}>
           <button
             className="action-btn"
             onClick={() => setSortBy(prev => {
@@ -1109,10 +1030,10 @@ const SmartHabitTracker = () => {
               return 'category';
             })}
             title={`Current Sort: ${sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}`}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', borderRadius: '12px' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            <MoreVertical size={16} />
-            <span style={{ fontSize: '0.85rem', fontWeight: 700 }}>
+            <ArrowUpDown size={13} />
+            <span style={{ fontSize: '0.72rem', fontWeight: 700 }}>
               {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
             </span>
           </button>
@@ -1123,14 +1044,12 @@ const SmartHabitTracker = () => {
             style={{ 
               display: 'flex', 
               alignItems: 'center', 
-              gap: '8px', 
-              padding: '10px 16px', 
-              borderRadius: '12px',
+              gap: '6px',
               border: showExtraHistory ? '2px solid #6366f1' : '2px solid transparent' 
             }}
           >
-            <History size={18} color={showExtraHistory ? '#6366f1' : 'currentColor'} />
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: showExtraHistory ? '#6366f1' : 'currentColor' }}>
+            <History size={14} color={showExtraHistory ? '#6366f1' : 'currentColor'} />
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: showExtraHistory ? '#6366f1' : 'currentColor' }}>
               Grind
             </span>
           </button>
@@ -1141,14 +1060,12 @@ const SmartHabitTracker = () => {
             style={{ 
               display: 'flex', 
               alignItems: 'center', 
-              gap: '8px', 
-              padding: '10px 16px', 
-              borderRadius: '12px',
+              gap: '6px',
               border: showArchived ? '2px solid var(--primary)' : '2px solid transparent' 
             }}
           >
-            <Archive size={18} color={showArchived ? 'var(--primary)' : 'currentColor'} />
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: showArchived ? 'var(--primary)' : 'currentColor' }}>
+            <Archive size={14} color={showArchived ? 'var(--primary)' : 'currentColor'} />
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: showArchived ? 'var(--primary)' : 'currentColor' }}>
               Archive
             </span>
           </button>
@@ -1166,7 +1083,7 @@ const SmartHabitTracker = () => {
               setShowAddModal(true);
             }}
           >
-            <Plus size={20} />
+            <Plus size={16} />
             <span>New Habit</span>
           </button>
         </div>
@@ -1191,7 +1108,7 @@ const SmartHabitTracker = () => {
                         {categoryHabits.length}
                       </span>
                     </div>
-                    <div className="habit-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: '24px' }}>
+                    <div className="habit-grid">
                       {categoryHabits.map(habit => renderHabit(habit))}
                     </div>
                   </div>
@@ -1200,9 +1117,6 @@ const SmartHabitTracker = () => {
             } else {
               return (
                 <div className="habit-grid" style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))', 
-                  gap: '32px', 
                   gridColumn: '1 / -1',
                   width: '100%' 
                 }}>
@@ -1696,7 +1610,7 @@ const HabitTrendChart = ({ history, color, habitId, userStats }) => {
   }, [history, userStats, habitId]);
 
   return (
-    <div className="habit-trend-mini" style={{ height: '40px', width: '100%', marginTop: '8px' }}>
+    <div className="habit-trend-mini" style={{ height: '32px', width: '100%', marginTop: '3px' }}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data}>
           <Area

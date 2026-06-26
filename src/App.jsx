@@ -73,12 +73,14 @@ function App() {
 
       {/* Main Dashboard Content Area */}
       <main className="content-container-wrap">
-        <div className="section-header-meta">
-          <div className="meta-text">
-            <span className="meta-tag">TRACKME METRICS</span>
-            <h2 className="meta-title">{currentTitle}</h2>
+        {activeTab !== 'habits' && (
+          <div className="section-header-meta">
+            <div className="meta-text">
+              <span className="meta-tag">TRACKME METRICS</span>
+              <h2 className="meta-title">{currentTitle}</h2>
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="dashboard-content-body">
           <ActiveComponent />

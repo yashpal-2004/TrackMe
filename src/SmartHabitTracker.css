@@ -23,13 +23,12 @@
 
 .habit-header {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   gap: 16px;
   margin-bottom: 32px;
   width: 100%;
-  flex-wrap: nowrap;
+  border-bottom: 1.5px solid #000000;
+  padding-bottom: 16px;
 }
 
 .habit-stats-overview {
@@ -41,26 +40,28 @@
 }
 
 .stat-card {
-  flex: 1;
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
-  background: white;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  transition: var(--transition);
-  justify-content: center;
-  min-width: 0;
+  flex: 1 !important;
+  padding: 2px 4px !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  transition: var(--transition) !important;
+  justify-content: center !important;
+  min-width: 0 !important;
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .stat-card .label {
-  font-size: 0.72rem;
+  font-size: 0.55rem;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -68,14 +69,14 @@
 }
 
 .stat-card .value {
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 0.85rem;
+  font-weight: 850;
   color: var(--primary);
 }
 
 .habit-controls {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: nowrap;
   align-items: center;
 }
@@ -83,14 +84,14 @@
 .habit-controls .action-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  height: 34px;
-  padding: 0 14px;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
   border-radius: 100px;
   border: 1.5px solid #000000;
   background: transparent;
   color: #000000;
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-weight: 800;
   text-transform: uppercase;
   transition: all 0.2s ease;
@@ -110,13 +111,13 @@
 .add-habit-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  height: 34px;
-  padding: 0 16px;
+  gap: 5px;
+  height: 28px;
+  padding: 0 12px;
   border-radius: 100px;
   background: var(--primary);
   color: white;
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-weight: 800;
   text-transform: uppercase;
   border: 1.5px solid var(--primary);
@@ -131,18 +132,18 @@
 
 .habit-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-  gap: 32px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
 }
 
 .habit-card {
   background: white;
   border-radius: var(--radius-md);
-  padding: 20px;
+  padding: 14px;
   border: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   transition: var(--transition);
   position: relative;
   overflow: hidden;
@@ -171,33 +172,33 @@
 .habit-title-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .habit-name {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-main);
 }
 
 .habit-category {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: 600;
   background: var(--habit-glow, var(--primary-glow));
   color: var(--habit-color, var(--primary));
-  padding: 2px 8px;
+  padding: 1px 6px;
   border-radius: 100px;
   width: fit-content;
 }
 
 .habit-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .action-btn {
-  padding: 6px;
-  border-radius: 8px;
+  padding: 4px;
+  border-radius: 6px;
   color: var(--text-muted);
   background: #f9fafb;
 }
@@ -211,7 +212,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px;
+  padding: 8px;
   background: #f9fafb;
   border-radius: var(--radius-sm);
 }
@@ -229,13 +230,13 @@
 }
 
 .streak-val {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 800;
   color: var(--text-main);
 }
 
 .streak-lbl {
-  font-size: 0.65rem;
+  font-size: 0.58rem;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -248,10 +249,10 @@
 }
 
 .habit-check-btn {
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 2px solid #e5e7eb;
+  border: 1.5px solid #e5e7eb;
   background: white;
   color: transparent;
   transition: var(--transition);
@@ -264,14 +265,14 @@
   background: var(--habit-color, var(--success));
   border-color: var(--habit-color, var(--success));
   color: white;
-  box-shadow: 0 4px 12px var(--habit-glow);
+  box-shadow: 0 2px 6px var(--habit-glow);
 }
 
 .habit-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
 }
 
@@ -821,8 +822,8 @@ textarea {
 
 .target-mini-bar {
   width: 100%;
-  height: 4px;
-  background: #f1f5f9;
+  height: 6px;
+  background: #e2e8f0;
   border-radius: 10px;
   overflow: hidden;
   position: relative;
