@@ -148,7 +148,11 @@ const SmartHabitTracker = () => {
     const statsRef = doc(db, 'userStats', 'global');
     const unsubscribeStats = onSnapshot(statsRef, (docSnap) => {
       if (docSnap.exists()) {
-        setUserStats(docSnap.data());
+        const data = docSnap.data();
+        setUserStats(data);
+        if (data.sortBy) {
+          setSortBy(data.sortBy);
+        }
       } else {
         setDoc(statsRef, { xp: 0, badges: {}, completedDates: {}, dailyWorkLog: {} });
       }
@@ -1035,11 +1039,15 @@ const SmartHabitTracker = () => {
         <div className="habit-controls" style={{ flexShrink: 0 }}>
           <button
             className="action-btn"
-            onClick={() => setSortBy(prev => {
-              if (prev === 'category') return 'priority';
-              if (prev === 'priority') return 'name';
-              return 'category';
-            })}
+            onClick={async () => {
+              const nextSort = sortBy === 'category' ? 'priority' : (sortBy === 'priority' ? 'name' : 'category');
+              setSortBy(nextSort);
+              try {
+                await updateDoc(doc(db, 'userStats', 'global'), { sortBy: nextSort });
+              } catch (err) {
+                console.error("Error saving sort preference:", err);
+              }
+            }}
             title={`Current Sort: ${sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}`}
             style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
           >
@@ -1769,8 +1777,34 @@ const HabitCalendar = ({ history, reflections, color, onToggleDate, onAddReflect
 const HabitAnalytics = ({ habits, userStats }) => {
   const [period, setPeriod] = useState(7); // default 7 days
   const [chartType, setChartType] = useState('area'); // 'area' | 'bar' | 'line'
+  const [analyticsDate, setAnalyticsDate] = useState(new Date());
 
   const data = useMemo(() => {
+    if (period === 30) {
+      const year = analyticsDate.getFullYear();
+      const month = analyticsDate.getMonth();
+      const totalDays = new Date(year, month + 1, 0).getDate();
+
+      const result = [];
+      for (let d = 1; d <= totalDays; d++) {
+        const checkDate = new Date(year, month, d);
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const count = habits.filter(h => (h.history || []).includes(dateStr)).length;
+
+        const label = checkDate.toLocaleDateString('default', { month: 'short', day: 'numeric' });
+        const extraXP = (userStats?.extraWorkLog?.[dateStr] || [])
+          .reduce((acc, entry) => acc + (entry.xpAwarded || 0), 0);
+
+        result.push({
+          name: label,
+          fullDate: dateStr,
+          completed: count,
+          extraXP: extraXP
+        });
+      }
+      return result;
+    }
+
     let daysToShow = period;
     if (period === 'all') {
       const earliest = habits.reduce((acc, h) => Math.min(acc, h.createdAt || Date.now()), Date.now());
@@ -1803,7 +1837,7 @@ const HabitAnalytics = ({ habits, userStats }) => {
       });
     }
     return result;
-  }, [habits, period, userStats]);
+  }, [habits, period, analyticsDate, userStats]);
 
   if (habits.length === 0) return null;
 
@@ -1959,24 +1993,49 @@ const HabitAnalytics = ({ habits, userStats }) => {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <div className="glass" style={{ display: 'flex', gap: '4px', padding: '5px', borderRadius: '12px', background: '#f8fafc' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          {period === 30 && (
+            <div className="glass" style={{ display: 'flex', gap: '8px', padding: '2px 8px', borderRadius: '100px', background: '#f8fafc', height: '28px', alignItems: 'center', border: '1px solid rgba(0,0,0,0.05)', fontSize: '0.68rem', fontWeight: 800 }}>
+              <button
+                onClick={() => setAnalyticsDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
+                style={{ padding: '2px', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', color: '#94a3b8', cursor: 'pointer' }}
+                title="Previous Month"
+              >
+                <ChevronLeft size={13} />
+              </button>
+              <span style={{ color: 'var(--text-main)', minWidth: '60px', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                {analyticsDate.toLocaleString('default', { month: 'short', year: 'numeric' })}
+              </span>
+              <button
+                onClick={() => setAnalyticsDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}
+                style={{ padding: '2px', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', color: '#94a3b8', cursor: 'pointer' }}
+                title="Next Month"
+              >
+                <ChevronRight size={13} />
+              </button>
+            </div>
+          )}
+
+          <div className="glass" style={{ display: 'flex', gap: '2px', padding: '2px', borderRadius: '100px', background: '#f8fafc', height: '28px', alignItems: 'center', border: '1px solid rgba(0,0,0,0.05)' }}>
             {[
-              { id: 'area', icon: <Activity size={16} /> },
-              { id: 'bar', icon: <BarChart2 size={16} /> },
-              { id: 'line', icon: <TrendingUp size={16} /> }
+              { id: 'area', icon: <Activity size={13} /> },
+              { id: 'bar', icon: <BarChart2 size={13} /> },
+              { id: 'line', icon: <TrendingUp size={13} /> }
             ].map(type => (
               <button
                 key={type.id}
                 onClick={() => setChartType(type.id)}
                 style={{
-                  padding: '8px',
-                  borderRadius: '10px',
+                  height: '24px',
+                  width: '24px',
+                  padding: 0,
+                  borderRadius: '100px',
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   background: chartType === type.id ? 'white' : 'transparent',
                   color: chartType === type.id ? 'var(--primary)' : '#94a3b8',
-                  boxShadow: chartType === type.id ? '0 4px 6px -1px rgba(0,0,0,0.1)' : 'none',
+                  boxShadow: chartType === type.id ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
                   border: 'none',
                   cursor: 'pointer',
                   transition: 'all 0.2s'
@@ -1987,7 +2046,7 @@ const HabitAnalytics = ({ habits, userStats }) => {
             ))}
           </div>
 
-          <div className="glass" style={{ display: 'flex', gap: '4px', padding: '5px', borderRadius: '12px', background: '#f8fafc' }}>
+          <div className="glass" style={{ display: 'flex', gap: '2px', padding: '2px', borderRadius: '100px', background: '#f8fafc', height: '28px', alignItems: 'center', border: '1px solid rgba(0,0,0,0.05)' }}>
             {[
               { label: 'Week', val: 7 },
               { label: 'Month', val: 30 },
@@ -1997,13 +2056,17 @@ const HabitAnalytics = ({ habits, userStats }) => {
                 key={p.label}
                 onClick={() => setPeriod(p.val)}
                 style={{
-                  padding: '8px 14px',
-                  borderRadius: '10px',
-                  fontSize: '0.75rem',
+                  height: '24px',
+                  padding: '0 10px',
+                  borderRadius: '100px',
+                  fontSize: '0.68rem',
                   fontWeight: 800,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   background: period === p.val ? 'white' : 'transparent',
                   color: period === p.val ? 'var(--primary)' : '#94a3b8',
-                  boxShadow: period === p.val ? '0 4px 6px -1px rgba(0,0,0,0.1)' : 'none',
+                  boxShadow: period === p.val ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
                   border: 'none',
                   cursor: 'pointer',
                   transition: 'all 0.2s'

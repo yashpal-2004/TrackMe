@@ -1045,22 +1045,16 @@ const TimeTracker = () => {
 
     return (
         <div className="time-tracker-page glass">
-            {/* Header */}
-            <header className="tracker-header">
-                <div className="title-section">
-                    <div className="icon-wrapper glass" style={{ boxShadow: '0 6px 0 var(--primary-glow)', transform: 'translateY(-2px)' }}>
-                        <Timer size={24} style={{ color: 'var(--primary)' }} />
-                    </div>
-                    <div>
-                        <h2 className="main-title">Flow State Hub</h2>
-                        <p className="sub-title">Optimize your deep work and productivity</p>
-                    </div>
+            {/* Unified Header Controls */}
+            <header className="sleep-header" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '16px', flexWrap: 'wrap', paddingBottom: '16px', borderBottom: '1.5px solid #000000', marginBottom: '32px' }}>
+                <div className="meta-text" style={{ flexShrink: 0 }}>
+                    <span className="meta-tag" style={{ fontSize: '0.72rem', fontWeight: 800, color: '#737373', letterSpacing: '0.1em' }}>TRACKME METRICS</span>
+                    <h2 className="meta-title" style={{ fontSize: '1.5rem', fontWeight: 900, textTransform: 'uppercase', margin: 0, letterSpacing: '-0.02em', color: '#000000' }}>Flow State Hub</h2>
                 </div>
 
-                <div className="controls-section">
-
-                    <button className="add-session-btn" onClick={() => setShowModal(true)}>
-                        <Plus size={18} />
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
+                    <button className="add-sleep-btn" onClick={() => setShowModal(true)}>
+                        <Plus size={14} />
                         <span>Log Session</span>
                     </button>
                 </div>

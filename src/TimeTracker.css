@@ -218,16 +218,17 @@
     align-items: center;
     gap: 6px;
     background: white;
-    padding: 2px 8px;
-    border-radius: 8px;
+    padding: 4px 10px;
+    border-radius: 100px;
     margin-right: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1.5px solid #000000;
+    box-shadow: none;
 }
 
 .month-nav.mini span {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 800;
-    color: var(--primary);
+    color: #000000;
     min-width: 35px;
     text-align: center;
 }
@@ -335,39 +336,74 @@
 }
 
 .today-metrics-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 8px;
     width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.today-metrics-container::-webkit-scrollbar {
+    height: 4px;
+}
+
+.today-metrics-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.today-metrics-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 2px;
 }
 
 .metric-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 8px;
+    justify-content: center;
+    flex: 1;
+    min-width: 60px;
+    padding: 8px 4px;
     background: #f8fafc;
     border-radius: 12px;
+    border: 1.5px solid #f1f5f9;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.metric-item:hover {
+    border-color: #0f172a;
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .m-label {
-    font-size: 0.9rem;
+    font-size: 0.65rem;
     font-weight: 800;
     color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 .m-value {
-    font-size: 1.5rem;
+    font-size: 1.05rem;
     font-weight: 900;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
 }
 
 .m-divider {
     display: none;
-    /* Dividers often cause issues with wrapping */
 }
 
 .stats-grid {
@@ -471,6 +507,9 @@
 .analytics-container {
     padding: 24px;
     margin-bottom: 32px;
+    background: white;
+    border: 1.5px solid #000000;
+    border-radius: 16px;
 }
 
 .analytics-header {
@@ -524,11 +563,11 @@
     gap: 12px;
     font-weight: 800;
     font-size: 0.85rem;
-    color: #334155;
+    color: #000000;
     background: white;
     padding: 6px 12px;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
+    border-radius: 100px;
+    border: 1.5px solid #000000;
 }
 
 .month-nav button {
@@ -1110,19 +1149,21 @@
 
 .distribution-card {
     padding: 24px;
-    background: #fdfdfd;
-    border: 1px solid #eef2f6;
-    border-radius: 28px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    background: white;
+    border: 1.5px solid #000000;
+    border-radius: 16px;
+    box-shadow: none;
 }
 
 .dist-header {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.9rem;
-    font-weight: 800;
-    color: #1e293b;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     margin-bottom: 20px;
 }
 

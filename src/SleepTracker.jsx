@@ -53,6 +53,7 @@ const SleepTracker = () => {
     const [sleepLogs, setSleepLogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+    const [showLogs, setShowLogs] = useState(false);
 
     // View Controls
     const [viewDate, setViewDate] = useState(new Date());
@@ -304,302 +305,302 @@ const SleepTracker = () => {
 
     return (
         <div className="sleep-tracker-section glass">
-            {/* Header */}
-            <div className="sleep-header">
-                <div className="sleep-title-group">
-                    <div className="icon-badge">
-                        <Moon size={22} className="text-indigo-600" />
-                    </div>
-                    <div>
-                        <h3 className="section-title">Sleep Tracker</h3>
-                        <p className="section-subtitle">Target: 7.5h (6h Night + 1.5h Nap)</p>
-                    </div>
+            {/* Unified Header Controls */}
+            <header className="sleep-header" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '16px', flexWrap: 'wrap', paddingBottom: '16px', borderBottom: '1.5px solid #000000', marginBottom: '32px' }}>
+                <div className="meta-text" style={{ flexShrink: 0 }}>
+                    <span className="meta-tag" style={{ fontSize: '0.72rem', fontWeight: 800, color: '#737373', letterSpacing: '0.1em' }}>TRACKME METRICS</span>
+                    <h2 className="meta-title" style={{ fontSize: '1.5rem', fontWeight: 900, textTransform: 'uppercase', margin: 0, letterSpacing: '-0.02em', color: '#000000' }}>Sleep & Recovery Tracker</h2>
                 </div>
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+
+                <div className="sleep-stats-overview" style={{ display: 'flex', flexDirection: 'row', gap: '8px', alignItems: 'center', flex: 1, justifyContent: 'center', minWidth: 0, fontSize: '0.68rem', fontWeight: 700, color: '#000000', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', height: '28px', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '0 10px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+                        <span style={{ color: 'var(--text-muted)', textTransform: 'uppercase' }}>Avg Duration ({viewMode === 'all' ? 'All Time' : viewMode === 'week' ? '7 Days' : stats.monthName}):</span>
+                        <span>{stats.avgDuration}h <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>/ {TARGET_SLEEP}h</span></span>
+                    </div>
+
+                    {viewMode === 'month' && (
+                        <div style={{ display: 'flex', height: '28px', gap: '8px', alignItems: 'center', whiteSpace: 'nowrap', background: '#f1f5f9', padding: '0 10px', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+                            <button className="calendar-nav-btn" onClick={() => navMonth(-1)} style={{ padding: '1px', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', cursor: 'pointer' }}>
+                                <ChevronLeft size={10} />
+                            </button>
+                            <span style={{ color: 'var(--text-main)', textTransform: 'uppercase' }}>{stats.monthName}</span>
+                            <button className="calendar-nav-btn" onClick={() => navMonth(1)} style={{ padding: '1px', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', cursor: 'pointer' }}>
+                                <ChevronRight size={10} />
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
                     <div className="view-toggle glass-toggle">
                         <button className={viewMode === 'week' ? 'active' : ''} onClick={() => setViewMode('week')}>Week</button>
                         <button className={viewMode === 'month' ? 'active' : ''} onClick={() => setViewMode('month')}>Month</button>
                         <button className={viewMode === 'all' ? 'active' : ''} onClick={() => setViewMode('all')}>All</button>
                     </div>
+                    <button
+                        className="add-sleep-btn"
+                        style={{ backgroundColor: 'transparent', color: '#000000', border: '1.5px solid #000000' }}
+                        onClick={() => setShowLogs(!showLogs)}
+                    >
+                        {showLogs ? 'Hide Logs' : 'Show Logs'}
+                    </button>
                     <button className="add-sleep-btn" onClick={() => setShowModal(true)}>
-                        <Plus size={18} />
+                        <Plus size={14} />
                         <span>Log Sleep</span>
                     </button>
                 </div>
-            </div>
+            </header>
 
             {stats && stats.lastLog ? (
                 <>
-                    {/* Stats Overview */}
-                    <div className="insights-grid">
-                        <div className="insight-card" style={{ gridColumn: 'span 3', justifyContent: 'space-between' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <span className="card-label">Avg Duration ({viewMode === 'all' ? 'All Time' : viewMode === 'week' ? 'Last 7 Days' : stats.monthName})</span>
-                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                                    <span className="card-value">{stats.avgDuration}h</span>
-                                    <span style={{ fontSize: '0.8rem', color: '#64748b' }}>/ 7.5h Target</span>
+
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '20px', marginBottom: '20px' }}>
+                        {/* Sleep Duration Chart */}
+                        <div className="sleep-analytics-detailed" style={{ margin: 0 }}>
+                            <div className="analytics-header">
+                                <TrendingUp size={16} />
+                                <span>Sleep Duration & Quality Trends</span>
+                            </div>
+                            <div style={{ height: '200px', width: '100%', marginTop: '16px' }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <ComposedChart
+                                        data={stats.chartData}
+                                        margin={{ top: 20, right: 20, left: 0, bottom: 0 }}
+                                    >
+                                        <defs>
+                                            <filter id="shadow3d_sleep_dur" x="-20%" y="-20%" width="140%" height="140%">
+                                                <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+                                                <feOffset dx="2" dy="4" result="offsetblur" />
+                                                <feComponentTransfer>
+                                                    <feFuncA type="linear" slope="0.2" />
+                                                </feComponentTransfer>
+                                                <feMerge>
+                                                    <feMergeNode />
+                                                    <feMergeNode in="SourceGraphic" />
+                                                </feMerge>
+                                            </filter>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#000000" strokeOpacity={0.06} />
+                                        <XAxis
+                                            dataKey="day"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 10, fontWeight: 700, fill: '#000000' }}
+                                            dy={10}
+                                            interval={viewMode === 'month' ? 4 : 0}
+                                        />
+                                        <YAxis
+                                            yAxisId="left"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 10, fontWeight: 700, fill: '#000000' }}
+                                            domain={[0, 12]}
+                                            ticks={[0, 2, 4, 6, 8, 10, 12]}
+                                            label={{ value: 'Hours', angle: -90, position: 'insideLeft', style: { fontSize: 11, fill: '#000000', fontWeight: 900 } }}
+                                        />
+                                        <Tooltip
+                                            cursor={{ fill: '#f8fafc' }}
+                                            content={({ active, payload, label }) => {
+                                                if (active && payload && payload.length) {
+                                                    const data = payload[0].payload;
+                                                    const startVal = data.range[0];
+                                                    const endVal = data.range[1];
+                                                    const startStr = formatTimeTick(startVal);
+                                                    const endStr = formatTimeTick(endVal);
+                                                    return (
+                                                        <div style={{ background: 'white', padding: '12px', borderRadius: '8px', border: '1.5px solid #000000', boxShadow: 'none' }}>
+                                                            <p style={{ fontSize: '12px', fontWeight: 900, color: '#000000', marginBottom: '8px', textTransform: 'uppercase' }}>{label}</p>
+                                                            <div style={{ fontSize: '11px', color: '#737373', marginBottom: '4px' }}>
+                                                                🌙 Bedtime: <strong style={{ color: '#000000' }}>{startStr}</strong>
+                                                            </div>
+                                                            <div style={{ fontSize: '11px', color: '#737373', marginBottom: '4px' }}>
+                                                                ☀️ Wake: <strong style={{ color: '#000000' }}>{endStr}</strong>
+                                                            </div>
+                                                            <div style={{ fontSize: '11px', color: '#737373', marginTop: '6px', paddingTop: '6px', borderTop: '1px solid #e5e7eb' }}>
+                                                                Total: <strong style={{ color: '#ff6b35', fontSize: '12px' }}>{data.duration}h</strong>
+                                                                {data.nap > 0 && <span style={{ color: '#ff6b35', marginLeft: '4px' }}>(+{data.nap.toFixed(1)}h nap)</span>}
+                                                            </div>
+                                                            <div style={{ fontSize: '10px', color: '#737373', marginTop: '4px' }}>
+                                                                Quality: {'⭐'.repeat(data.quality)}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+                                                return null;
+                                            }}
+                                        />
+                                        <ReferenceLine y={7.5} yAxisId="left" stroke="#ff6b35" strokeDasharray="3 3" label={{ value: 'Target (7.5h)', position: 'insideTopRight', fontSize: 10, fill: '#ff6b35', fontWeight: 900 }} />
+                                        <ReferenceLine y={6} yAxisId="left" stroke="#ef4444" strokeDasharray="3 3" strokeOpacity={0.6} label={{ value: 'Min (6h)', position: 'insideTopRight', fontSize: 10, fill: '#ef4444', fontWeight: 700 }} />
+
+                                        <Bar yAxisId="left" dataKey="duration" radius={[4, 4, 0, 0]} barSize={20} style={{ filter: 'url(#shadow3d_sleep_dur)' }}>
+                                            {stats.chartData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={entry.duration >= 7.3 ? '#000000' : entry.duration >= 6 ? '#737373' : '#ef4444'} fillOpacity={0.85} />
+                                            ))}
+                                        </Bar>
+                                        <Line yAxisId="left" type="monotone" dataKey="duration" stroke="#ff6b35" strokeWidth={2} dot={{ fill: '#ff6b35', r: 4 }} style={{ filter: 'url(#shadow3d_sleep_dur)' }} />
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '12px', flexWrap: 'wrap' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#000000', fontWeight: 750 }}>
+                                    <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: '#000000' }}></div>
+                                    <span>Excellent (≥7.3h)</span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#737373', fontWeight: 700 }}>
+                                    <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: '#737373' }}></div>
+                                    <span>Good (6-7.3h)</span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#ef4444', fontWeight: 700 }}>
+                                    <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: '#ef4444' }}></div>
+                                    <span>Insufficient (&lt;6h)</span>
                                 </div>
                             </div>
-                            {viewMode === 'month' && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <button className="nav-mini-btn" onClick={() => navMonth(-1)}><ChevronLeft size={16} /></button>
-                                    <span style={{ fontWeight: 700, color: '#334155' }}>{stats.monthName}</span>
-                                    <button className="nav-mini-btn" onClick={() => navMonth(1)}><ChevronRight size={16} /></button>
+                        </div>
+
+                        {/* Sleep Schedule Consistency Chart */}
+                        <div className="sleep-analytics-detailed" style={{ margin: 0 }}>
+                            <div className="analytics-header">
+                                <Clock size={16} />
+                                <span>Sleep Schedule Consistency</span>
+                            </div>
+                            <div style={{ height: '200px', width: '100%', marginTop: '16px' }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <ComposedChart
+                                        data={stats.chartData.map(d => ({
+                                            ...d,
+                                            bedtimeDisplay: d.range[0],
+                                            wakeDisplay: d.range[1]
+                                        }))}
+                                        margin={{ top: 20, right: 20, left: 0, bottom: 0 }}
+                                    >
+                                        <defs>
+                                            <filter id="shadow3d_sleep_con" x="-20%" y="-20%" width="140%" height="140%">
+                                                <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+                                                <feOffset dx="2" dy="4" result="offsetblur" />
+                                                <feComponentTransfer>
+                                                    <feFuncA type="linear" slope="0.2" />
+                                                </feComponentTransfer>
+                                                <feMerge>
+                                                    <feMergeNode />
+                                                    <feMergeNode in="SourceGraphic" />
+                                                </feMerge>
+                                            </filter>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#000000" strokeOpacity={0.06} />
+                                        <XAxis
+                                            dataKey="day"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 10, fontWeight: 700, fill: '#000000' }}
+                                            dy={10}
+                                            interval={viewMode === 'month' ? 4 : 0}
+                                        />
+                                        <YAxis
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 10, fontWeight: 700, fill: '#000000' }}
+                                            domain={[18, 34]}
+                                            ticks={[18, 20, 22, 24, 26, 28, 30, 32, 34]}
+                                            tickFormatter={formatTimeTick}
+                                        />
+                                        <Tooltip
+                                            cursor={{ fill: '#f8fafc' }}
+                                            content={({ active, payload, label }) => {
+                                                if (active && payload && payload.length) {
+                                                    const data = payload[0].payload;
+                                                    const bedStr = formatTimeTick(data.bedtimeDisplay);
+                                                    const wakeStr = formatTimeTick(data.wakeDisplay);
+                                                    return (
+                                                        <div style={{ background: 'white', padding: '12px', borderRadius: '8px', border: '1.5px solid #000000', boxShadow: 'none' }}>
+                                                            <p style={{ fontSize: '12px', fontWeight: 900, color: '#000000', marginBottom: '8px', textTransform: 'uppercase' }}>{label}</p>
+                                                            <div style={{ fontSize: '11px', color: '#737373', marginBottom: '4px' }}>
+                                                                🌙 Bedtime: <strong style={{ color: '#ff6b35' }}>{bedStr}</strong>
+                                                            </div>
+                                                            <div style={{ fontSize: '11px', color: '#737373' }}>
+                                                                ☀️ Wake: <strong style={{ color: '#000000' }}>{wakeStr}</strong>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+                                                return null;
+                                            }}
+                                        />
+                                        <ReferenceLine y={24} stroke="#ff6b35" strokeDasharray="3 3" strokeOpacity={0.4} label={{ value: 'Target Bedtime (12 AM)', position: 'insideTopLeft', fontSize: 9, fill: '#ff6b35', fontWeight: 700 }} />
+                                        <ReferenceLine y={31.5} stroke="#000000" strokeDasharray="3 3" strokeOpacity={0.4} label={{ value: 'Target Wake (7:30 AM)', position: 'insideBottomLeft', fontSize: 9, fill: '#000000', fontWeight: 700 }} />
+
+                                        <Line type="monotone" dataKey="bedtimeDisplay" stroke="#ff6b35" strokeWidth={2.5} dot={{ fill: '#ff6b35', r: 5, strokeWidth: 2, stroke: 'white' }} name="Bedtime" style={{ filter: 'url(#shadow3d_sleep_con)' }} />
+                                        <Line type="monotone" dataKey="wakeDisplay" stroke="#000000" strokeWidth={2.5} dot={{ fill: '#000000', r: 5, strokeWidth: 2, stroke: 'white' }} name="Wake Time" style={{ filter: 'url(#shadow3d_sleep_con)' }} />
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '12px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#ff6b35', fontWeight: 700 }}>
+                                    <div style={{ width: '16px', height: '3px', borderRadius: '2px', background: '#ff6b35' }}></div>
+                                    <span>🌙 Bedtime</span>
                                 </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Guidance Box */}
-                    <div className={`guidance-box ${stats.guidanceType}`}>
-                        {stats.guidanceType === 'success' ? <CheckCircle2 size={18} /> :
-                            stats.guidanceType === 'warning' ? <AlertCircle size={18} /> :
-                                <Info size={18} />}
-                        <span>{stats.guidance}</span>
-                    </div>
-
-                    {/* Sleep Duration Chart */}
-                    <div className="sleep-analytics-detailed">
-                        <div className="analytics-header">
-                            <TrendingUp size={16} />
-                            <span>Sleep Duration & Quality Trends</span>
-                        </div>
-                        <div style={{ height: '300px', width: '100%', marginTop: '16px' }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <ComposedChart
-                                    data={stats.chartData}
-                                    margin={{ top: 20, right: 20, left: 0, bottom: 0 }}
-                                >
-                                    <defs>
-                                        <filter id="shadow3d_sleep_dur" x="-20%" y="-20%" width="140%" height="140%">
-                                            <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
-                                            <feOffset dx="2" dy="4" result="offsetblur" />
-                                            <feComponentTransfer>
-                                                <feFuncA type="linear" slope="0.2" />
-                                            </feComponentTransfer>
-                                            <feMerge>
-                                                <feMergeNode />
-                                                <feMergeNode in="SourceGraphic" />
-                                            </feMerge>
-                                        </filter>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                    <XAxis
-                                        dataKey="day"
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fontSize: 10, fontWeight: 600, fill: '#94a3b8' }}
-                                        dy={10}
-                                        interval={viewMode === 'month' ? 4 : 0}
-                                    />
-                                    <YAxis
-                                        yAxisId="left"
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fontSize: 10, fontWeight: 600, fill: '#94a3b8' }}
-                                        domain={[0, 12]}
-                                        ticks={[0, 2, 4, 6, 8, 10, 12]}
-                                        label={{ value: 'Hours', angle: -90, position: 'insideLeft', style: { fontSize: 11, fill: '#64748b', fontWeight: 700 } }}
-                                    />
-                                    <Tooltip
-                                        cursor={{ fill: '#f8fafc' }}
-                                        content={({ active, payload, label }) => {
-                                            if (active && payload && payload.length) {
-                                                const data = payload[0].payload;
-                                                const startVal = data.range[0];
-                                                const endVal = data.range[1];
-                                                const startStr = formatTimeTick(startVal);
-                                                const endStr = formatTimeTick(endVal);
-                                                return (
-                                                    <div style={{ background: 'white', padding: '12px', borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
-                                                        <p style={{ fontSize: '12px', fontWeight: 700, color: '#1e293b', marginBottom: '8px' }}>{label}</p>
-                                                        <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>
-                                                            🌙 Bedtime: <strong style={{ color: '#4f46e5' }}>{startStr}</strong>
-                                                        </div>
-                                                        <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>
-                                                            ☀️ Wake: <strong style={{ color: '#4f46e5' }}>{endStr}</strong>
-                                                        </div>
-                                                        <div style={{ fontSize: '11px', color: '#64748b', marginTop: '6px', paddingTop: '6px', borderTop: '1px solid #f1f5f9' }}>
-                                                            Total: <strong style={{ color: '#10b981', fontSize: '12px' }}>{data.duration}h</strong>
-                                                            {data.nap > 0 && <span style={{ color: '#f59e0b', marginLeft: '4px' }}>(+{data.nap.toFixed(1)}h nap)</span>}
-                                                        </div>
-                                                        <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '4px' }}>
-                                                            Quality: {'⭐'.repeat(data.quality)}
-                                                        </div>
-                                                    </div>
-                                                );
-                                            }
-                                            return null;
-                                        }}
-                                    />
-                                    <ReferenceLine y={7.5} yAxisId="left" stroke="#10b981" strokeDasharray="3 3" label={{ value: 'Target (7.5h)', position: 'insideTopRight', fontSize: 10, fill: '#10b981', fontWeight: 700 }} />
-                                    <ReferenceLine y={6} yAxisId="left" stroke="#f59e0b" strokeDasharray="3 3" strokeOpacity={0.6} label={{ value: 'Min (6h)', position: 'insideTopRight', fontSize: 10, fill: '#f59e0b' }} />
-
-                                    <Bar yAxisId="left" dataKey="duration" radius={[8, 8, 0, 0]} barSize={40} style={{ filter: 'url(#shadow3d_sleep_dur)' }}>
-                                        {stats.chartData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.duration >= 7.3 ? '#10b981' : entry.duration >= 6 ? '#818cf8' : '#ef4444'} fillOpacity={0.85} />
-                                        ))}
-                                    </Bar>
-                                    <Line yAxisId="left" type="monotone" dataKey="duration" stroke="#4f46e5" strokeWidth={2} dot={{ fill: '#4f46e5', r: 4 }} style={{ filter: 'url(#shadow3d_sleep_dur)' }} />
-                                </ComposedChart>
-                            </ResponsiveContainer>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '12px', flexWrap: 'wrap' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#64748b' }}>
-                                <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: '#10b981' }}></div>
-                                <span>Excellent (≥7.3h)</span>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#64748b' }}>
-                                <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: '#818cf8' }}></div>
-                                <span>Good (6-7.3h)</span>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#64748b' }}>
-                                <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: '#ef4444' }}></div>
-                                <span>Insufficient (&lt;6h)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Sleep Schedule Consistency Chart */}
-                    <div className="sleep-analytics-detailed" style={{ marginTop: '24px' }}>
-                        <div className="analytics-header">
-                            <Clock size={16} />
-                            <span>Sleep Schedule Consistency</span>
-                        </div>
-                        <div style={{ height: '280px', width: '100%', marginTop: '16px' }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <ComposedChart
-                                    data={stats.chartData.map(d => ({
-                                        ...d,
-                                        bedtimeDisplay: d.range[0],
-                                        wakeDisplay: d.range[1]
-                                    }))}
-                                    margin={{ top: 20, right: 20, left: 0, bottom: 0 }}
-                                >
-                                    <defs>
-                                        <filter id="shadow3d_sleep_con" x="-20%" y="-20%" width="140%" height="140%">
-                                            <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
-                                            <feOffset dx="2" dy="4" result="offsetblur" />
-                                            <feComponentTransfer>
-                                                <feFuncA type="linear" slope="0.2" />
-                                            </feComponentTransfer>
-                                            <feMerge>
-                                                <feMergeNode />
-                                                <feMergeNode in="SourceGraphic" />
-                                            </feMerge>
-                                        </filter>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                    <XAxis
-                                        dataKey="day"
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fontSize: 10, fontWeight: 600, fill: '#94a3b8' }}
-                                        dy={10}
-                                        interval={viewMode === 'month' ? 4 : 0}
-                                    />
-                                    <YAxis
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fontSize: 10, fontWeight: 600, fill: '#94a3b8' }}
-                                        domain={[18, 34]}
-                                        ticks={[18, 20, 22, 24, 26, 28, 30, 32, 34]}
-                                        tickFormatter={formatTimeTick}
-                                    />
-                                    <Tooltip
-                                        cursor={{ fill: '#f8fafc' }}
-                                        content={({ active, payload, label }) => {
-                                            if (active && payload && payload.length) {
-                                                const data = payload[0].payload;
-                                                const bedStr = formatTimeTick(data.bedtimeDisplay);
-                                                const wakeStr = formatTimeTick(data.wakeDisplay);
-                                                return (
-                                                    <div style={{ background: 'white', padding: '12px', borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
-                                                        <p style={{ fontSize: '12px', fontWeight: 700, color: '#1e293b', marginBottom: '8px' }}>{label}</p>
-                                                        <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>
-                                                            🌙 Bedtime: <strong style={{ color: '#8b5cf6' }}>{bedStr}</strong>
-                                                        </div>
-                                                        <div style={{ fontSize: '11px', color: '#64748b' }}>
-                                                            ☀️ Wake: <strong style={{ color: '#f59e0b' }}>{wakeStr}</strong>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            }
-                                            return null;
-                                        }}
-                                    />
-                                    <ReferenceLine y={24} stroke="#8b5cf6" strokeDasharray="3 3" strokeOpacity={0.4} label={{ value: 'Target Bedtime (12 AM)', position: 'insideTopLeft', fontSize: 9, fill: '#8b5cf6' }} />
-                                    <ReferenceLine y={31.5} stroke="#f59e0b" strokeDasharray="3 3" strokeOpacity={0.4} label={{ value: 'Target Wake (7:30 AM)', position: 'insideBottomLeft', fontSize: 9, fill: '#f59e0b' }} />
-
-                                    <Line type="monotone" dataKey="bedtimeDisplay" stroke="#8b5cf6" strokeWidth={2.5} dot={{ fill: '#8b5cf6', r: 5, strokeWidth: 2, stroke: 'white' }} name="Bedtime" style={{ filter: 'url(#shadow3d_sleep_con)' }} />
-                                    <Line type="monotone" dataKey="wakeDisplay" stroke="#f59e0b" strokeWidth={2.5} dot={{ fill: '#f59e0b', r: 5, strokeWidth: 2, stroke: 'white' }} name="Wake Time" style={{ filter: 'url(#shadow3d_sleep_con)' }} />
-                                </ComposedChart>
-                            </ResponsiveContainer>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '12px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#64748b' }}>
-                                <div style={{ width: '16px', height: '3px', borderRadius: '2px', background: '#8b5cf6' }}></div>
-                                <span>🌙 Bedtime</span>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#64748b' }}>
-                                <div style={{ width: '16px', height: '3px', borderRadius: '2px', background: '#f59e0b' }}></div>
-                                <span>☀️ Wake Time</span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#000000', fontWeight: 700 }}>
+                                    <div style={{ width: '16px', height: '3px', borderRadius: '2px', background: '#000000' }}></div>
+                                    <span>☀️ Wake Time</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Simple List for Context */}
-                    <div className="sleep-history-list">
-                        <div className="list-header">Logs & Notes</div>
-                        {[...stats.chartData].reverse().slice(0, 5).map((d, i) => {
-                            const log = sleepLogs.find(l =>
-                                new Date(l.date).toLocaleDateString('default', { month: 'short', day: 'numeric' }) === d.day &&
-                                parseFloat(l.totalDuration.toFixed(1)) === d.duration
-                            );
+                    {showLogs && (
+                        <div className="sleep-history-list">
+                            <div className="list-header">Logs & Notes</div>
+                            {[...stats.chartData].reverse().slice(0, 5).map((d, i) => {
+                                const log = sleepLogs.find(l =>
+                                    new Date(l.date).toLocaleDateString('default', { month: 'short', day: 'numeric' }) === d.day &&
+                                    parseFloat(l.totalDuration.toFixed(1)) === d.duration
+                                );
 
-                            return log ? (
-                                <div key={log.id} className="sleep-history-item">
-                                    <div className="log-left">
-                                        <div className="log-date-badge">
-                                            <span className="day">{new Date(log.date).toLocaleDateString('default', { weekday: 'short' })}</span>
-                                            <span className="date">{new Date(log.date).getDate()}</span>
-                                        </div>
-                                        <div className="log-details">
-                                            <div className="metric-row">
-                                                <div className="time-badge">
-                                                    <Moon size={12} /> {formatTimeTick(timeToDecimal(log.sleepTime))} - {formatTimeTick(timeToDecimal(log.wakeTime))}
-                                                </div>
-                                                {log.napDuration > 0 && (
-                                                    <div className="nap-badge">
-                                                        <Coffee size={10} /> +{log.napDuration.toFixed(1)}h
+                                return log ? (
+                                    <div key={log.id} className="sleep-history-item">
+                                        <div className="log-left">
+                                            <div className="log-date-badge">
+                                                <span className="day">{new Date(log.date).toLocaleDateString('default', { weekday: 'short' })}</span>
+                                                <span className="date">{new Date(log.date).getDate()}</span>
+                                            </div>
+                                            <div className="log-details">
+                                                <div className="metric-row">
+                                                    <div className="time-badge">
+                                                        <Moon size={12} /> {formatTimeTick(timeToDecimal(log.sleepTime))} - {formatTimeTick(timeToDecimal(log.wakeTime))}
                                                     </div>
-                                                )}
-                                            </div>
-                                            <div className="rating-row">
-                                                {[...Array(5)].map((_, idx) => (
-                                                    <Star
-                                                        key={idx}
-                                                        size={10}
-                                                        fill={idx < log.quality ? getQualityColor(log.quality) : "#e2e8f0"}
-                                                        stroke="none"
-                                                    />
-                                                ))}
-                                                <span className="notes-preview">{log.notes}</span>
+                                                    {log.napDuration > 0 && (
+                                                        <div className="nap-badge">
+                                                            <Coffee size={10} /> +{log.napDuration.toFixed(1)}h
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="rating-row">
+                                                    {[...Array(5)].map((_, idx) => (
+                                                        <Star
+                                                            key={idx}
+                                                            size={10}
+                                                            fill={idx < log.quality ? getQualityColor(log.quality) : "#e2e8f0"}
+                                                            stroke="none"
+                                                        />
+                                                    ))}
+                                                    <span className="notes-preview">{log.notes}</span>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                            <button className="delete-mini-btn edit" onClick={() => handleEditClick(log)} title="Edit Log">
+                                                <Edit2 size={14} />
+                                            </button>
+                                            <button className="delete-mini-btn" onClick={() => deleteLog(log.id)} title="Delete Log">
+                                                <Trash2 size={14} />
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                        <button className="delete-mini-btn edit" onClick={() => handleEditClick(log)} title="Edit Log">
-                                            <Edit2 size={14} />
-                                        </button>
-                                        <button className="delete-mini-btn" onClick={() => deleteLog(log.id)} title="Delete Log">
-                                            <Trash2 size={14} />
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : null;
-                        })}
-                    </div>
+                                ) : null;
+                            })}
+                        </div>
+                    )}
                 </>
             ) : (
                 <div className="empty-sleep-state">

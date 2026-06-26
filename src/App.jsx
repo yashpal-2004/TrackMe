@@ -73,7 +73,7 @@ function App() {
 
       {/* Main Dashboard Content Area */}
       <main className="content-container-wrap">
-        {activeTab !== 'habits' && (
+        {activeTab !== 'habits' && activeTab !== 'sleep' && activeTab !== 'flow' && (
           <div className="section-header-meta">
             <div className="meta-text">
               <span className="meta-tag">TRACKME METRICS</span>
