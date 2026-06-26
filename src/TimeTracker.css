@@ -1,5 +1,5 @@
 .time-tracker-page {
-    padding: 32px;
+    padding: 16px 0;
     animation: fadeIn 0.5s ease-out;
     max-width: 100%;
     overflow-x: hidden;
