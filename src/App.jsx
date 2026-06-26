@@ -45,9 +45,6 @@ function App() {
 
         {/* Right Actions */}
         <div className="nav-actions">
-          <button className="nav-action-pill bag-pill">
-            STATS — 3
-          </button>
           <button className="mobile-menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -80,12 +77,6 @@ function App() {
           <div className="meta-text">
             <span className="meta-tag">TRACKME METRICS</span>
             <h2 className="meta-title">{currentTitle}</h2>
-          </div>
-          <div className="meta-badge-box">
-            <div className="health-badge-black">
-              <Heart size={14} className="heart-pulse" />
-              <span>TrackMe Active</span>
-            </div>
           </div>
         </div>
 
