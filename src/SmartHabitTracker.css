@@ -23,30 +23,35 @@
 
 .habit-header {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
+  margin-bottom: 32px;
+  width: 100%;
+  flex-wrap: nowrap;
 }
 
 .habit-stats-overview {
   display: flex;
   flex-direction: row;
-  gap: 12px;
-  margin-bottom: 24px;
-  width: 100%;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
 }
 
 .stat-card {
   flex: 1;
-  padding: 12px 16px;
+  padding: 10px 12px;
   border-radius: var(--radius-md);
   background: white;
   border: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   transition: var(--transition);
   justify-content: center;
+  min-width: 0;
 }
 
 .stat-card:hover {
@@ -75,18 +80,53 @@
   align-items: center;
 }
 
+.habit-controls .action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 100px;
+  border: 1.5px solid #000000;
+  background: transparent;
+  color: #000000;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.habit-controls .action-btn:hover {
+  background: #000000;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.habit-controls .action-btn.active {
+  background: #000000;
+  color: #ffffff;
+}
+
 .add-habit-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 100px;
   background: var(--primary);
   color: white;
-  padding: 12px 24px;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  box-shadow: 0 4px 12px var(--primary-glow);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  border: 1.5px solid var(--primary);
+  transition: all 0.2s ease;
 }
 
 .add-habit-btn:hover {
-  transform: scale(1.02);
-  filter: brightness(1.1);
+  background: #262626;
+  border-color: #262626;
+  transform: translateY(-1px);
 }
 
 .habit-grid {
@@ -594,26 +634,25 @@ textarea {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #6366f1;
-  color: white;
-  padding: 6px 14px;
+  background: transparent;
+  color: #000000;
+  padding: 0 14px;
   border-radius: 100px;
-  font-weight: 700;
-  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
-  font-size: 0.85rem;
+  font-weight: 800;
+  font-size: 0.72rem;
   transition: all 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1.5px solid #000000;
   cursor: default;
+  height: 34px;
+  text-transform: uppercase;
 }
 
 .xp-counter:hover {
-  background: #4f46e5;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(99, 102, 241, 0.3);
+  background: #f5f5f5;
 }
 
 .xp-val {
-  font-family: 'Inter', sans-serif;
+  font-family: inherit;
   letter-spacing: 0.05em;
 }
 

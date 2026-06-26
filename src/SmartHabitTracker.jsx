@@ -982,12 +982,125 @@ const SmartHabitTracker = () => {
   return (
     <div className="habit-tracker-container">
       <header className="habit-header">
-        <div className="habit-controls">
-          <div className="xp-counter" title={`${currentMonthStats.monthName} XP`}>
-            <Zap size={16} fill="white" />
-            <span className="xp-val">{currentMonthStats.totalEarned || 0} {currentMonthStats.monthName.split(' ')[0].toUpperCase()} XP</span>
+        <div className="habit-stats-overview">
+          <div className="stat-card">
+            <span className="label">Total Habits</span>
+            <span className="value">{stats.total}</span>
           </div>
+          <div className="stat-card" style={{ flex: '1.8', display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: '220px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <button className="calendar-nav-btn" onClick={() => setCollectiveDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}>
+                  <ChevronLeft size={14} />
+                </button>
+                <span className="label" style={{ color: 'var(--text-main)', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>{currentMonthStats.monthName}</span>
+                <button className="calendar-nav-btn" onClick={() => setCollectiveDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))}>
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                {currentMonthStats.extraWorkCount} Extra (+{currentMonthStats.totalExtraXP} XP)
+              </div>
+            </div>
 
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '6px', gap: '8px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', whiteSpace: 'nowrap' }}>
+                  <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-main)' }}>{currentMonthStats.totalEarned}</span>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>/ {currentMonthStats.totalTarget} XP</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                    Expected: {currentMonthStats.totalExpected} XP
+                  </div>
+                  {(() => {
+                    const diff = currentMonthStats.totalEarned - currentMonthStats.totalExpected;
+                    return (
+                      <div style={{
+                        fontSize: '0.68rem',
+                        fontWeight: 800,
+                        color: diff >= 0 ? '#10b981' : '#f59e0b',
+                        padding: '1px 5px',
+                        background: diff >= 0 ? '#f0fdf4' : '#fffbeb',
+                        borderRadius: '4px',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        {diff >= 0 ? `+${diff}` : `${diff}`} XP ({currentMonthStats.totalTarget > 0 ? Math.floor((Math.abs(diff) / currentMonthStats.totalTarget) * 100) : 0}%)
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+              <span style={{ fontSize: '1.15rem', fontWeight: 900, color: 'var(--primary)', whiteSpace: 'nowrap' }}>
+                {currentMonthStats.totalTarget > 0 ? Math.floor((currentMonthStats.totalEarned / currentMonthStats.totalTarget) * 100) : 0}%
+              </span>
+            </div>
+
+            <div className="target-mini-bar" style={{ height: '8px', background: '#f1f5f9', marginTop: '4px' }}>
+              <div
+                className="target-expected-fill"
+                style={{ width: `${currentMonthStats.totalTarget > 0 ? Math.min(100, (currentMonthStats.totalExpected / currentMonthStats.totalTarget) * 100) : 0}%` }}
+              />
+              <div
+                className="target-expected-indicator"
+                style={{ left: `${currentMonthStats.totalTarget > 0 ? Math.min(100, (currentMonthStats.totalExpected / currentMonthStats.totalTarget) * 100) : 0}%`, height: '100%' }}
+              />
+              <div
+                className="target-mini-fill"
+                style={{
+                  width: `${currentMonthStats.totalTarget > 0 ? Math.min(100, (currentMonthStats.totalEarned / currentMonthStats.totalTarget) * 100) : 0}%`,
+                  backgroundColor: 'var(--primary)',
+                  borderRadius: '10px',
+                  position: 'relative',
+                  zIndex: 2
+                }}
+              />
+            </div>
+          </div>
+          <div className="stat-card">
+            <span className="label">Today's Progress</span>
+            <span className="value">{stats.completed} / {stats.total}</span>
+            <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: 700, marginTop: '-4px' }}>
+              +{todayStats.totalXP} XP Today
+            </div>
+            <div className="progress-bar-container">
+              <div
+                className="progress-bar-fill"
+                style={{ width: `${stats.total > 0 ? (stats.completed / stats.total) * 100 : 0}%` }}
+              ></div>
+            </div>
+          </div>
+          <div className="stat-card">
+            <span className="label">Average Streak</span>
+            <span className="value">{stats.avgStreak}</span>
+          </div>
+          <div className="stat-card">
+            <span className="label">Best Streak</span>
+            <span className="value">{stats.bestStreak} <Trophy size={16} style={{ color: '#f59e0b', verticalAlign: 'middle' }} /></span>
+          </div>
+          {stats.extraWorkTodayXP > 0 && (
+            <div className="stat-card" style={{ background: '#f5f7ff', border: '1px solid #e0e7ff' }}>
+              <span className="label" style={{ color: '#4338ca' }}>Today's Grind</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Flame className="text-indigo-600" size={24} />
+                <span className="value" style={{ color: '#4338ca' }}>+{stats.extraWorkTodayXP} XP</span>
+              </div>
+              <span style={{ fontSize: '0.7rem', color: '#6366f1', fontWeight: 600 }}>Bonus from extra efforts!</span>
+            </div>
+          )}
+          {todayBadge && (
+            <div className="stat-card" style={{ background: 'linear-gradient(135deg, #fffbeb, #fef3c7)', border: '1px solid #fcd34d' }}>
+              <span className="label" style={{ color: '#92400e' }}>Daily Award</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Award className="text-amber-500" size={24} />
+                <span className="value" style={{ color: '#92400e', fontSize: '1.2rem' }}>{todayBadge}</span>
+              </div>
+              <span style={{ fontSize: '0.7rem', color: '#b45309', fontWeight: 600 }}>Earned for 2x productivity!</span>
+            </div>
+          )}
+        </div>
+
+        <div className="habit-controls">
           <button
             className="action-btn"
             onClick={() => setSortBy(prev => {
@@ -1058,123 +1171,6 @@ const SmartHabitTracker = () => {
           </button>
         </div>
       </header>
-
-      <div className="habit-stats-overview">
-        <div className="stat-card">
-          <span className="label">Total Habits</span>
-          <span className="value">{stats.total}</span>
-        </div>
-        <div className="stat-card" style={{ flex: '1.8', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <button className="calendar-nav-btn" onClick={() => setCollectiveDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}>
-                <ChevronLeft size={16} />
-              </button>
-              <span className="label" style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>{currentMonthStats.monthName}</span>
-              <button className="calendar-nav-btn" onClick={() => setCollectiveDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))}>
-                <ChevronRight size={16} />
-              </button>
-            </div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              {currentMonthStats.extraWorkCount} Extra Logs ({currentMonthStats.totalExtraXP} XP)
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '6px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-main)' }}>{currentMonthStats.totalEarned}</span>
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>/ {currentMonthStats.totalTarget} XP</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                  Expected: {currentMonthStats.totalExpected} XP
-                </div>
-                {(() => {
-                  const diff = currentMonthStats.totalEarned - currentMonthStats.totalExpected;
-                  return (
-                    <div style={{
-                      fontSize: '0.7rem',
-                      fontWeight: 800,
-                      color: diff >= 0 ? '#10b981' : '#f59e0b',
-                      padding: '1px 6px',
-                      background: diff >= 0 ? '#f0fdf4' : '#fffbeb',
-                      borderRadius: '4px'
-                    }}>
-                      {diff >= 0 ? `Ahead by ${diff}` : `Behind by ${Math.abs(diff)}`} XP ({currentMonthStats.totalTarget > 0 ? Math.floor((Math.abs(diff) / currentMonthStats.totalTarget) * 100) : 0}%)
-                    </div>
-                  );
-                })()}
-              </div>
-            </div>
-            <span style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--primary)' }}>
-              {currentMonthStats.totalTarget > 0 ? Math.floor((currentMonthStats.totalEarned / currentMonthStats.totalTarget) * 100) : 0}%
-            </span>
-          </div>
-
-          <div className="target-mini-bar" style={{ height: '8px', background: '#f1f5f9', marginTop: '4px' }}>
-            <div
-              className="target-expected-fill"
-              style={{ width: `${currentMonthStats.totalTarget > 0 ? Math.min(100, (currentMonthStats.totalExpected / currentMonthStats.totalTarget) * 100) : 0}%` }}
-            />
-            <div
-              className="target-expected-indicator"
-              style={{ left: `${currentMonthStats.totalTarget > 0 ? Math.min(100, (currentMonthStats.totalExpected / currentMonthStats.totalTarget) * 100) : 0}%`, height: '100%' }}
-            />
-            <div
-              className="target-mini-fill"
-              style={{
-                width: `${currentMonthStats.totalTarget > 0 ? Math.min(100, (currentMonthStats.totalEarned / currentMonthStats.totalTarget) * 100) : 0}%`,
-                backgroundColor: 'var(--primary)',
-                borderRadius: '10px',
-                position: 'relative',
-                zIndex: 2
-              }}
-            />
-          </div>
-        </div>
-        <div className="stat-card">
-          <span className="label">Today's Progress</span>
-          <span className="value">{stats.completed} / {stats.total}</span>
-          <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: 700, marginTop: '-4px' }}>
-            +{todayStats.totalXP} XP Today
-          </div>
-          <div className="progress-bar-container">
-            <div
-              className="progress-bar-fill"
-              style={{ width: `${stats.total > 0 ? (stats.completed / stats.total) * 100 : 0}%` }}
-            ></div>
-          </div>
-        </div>
-        <div className="stat-card">
-          <span className="label">Average Streak</span>
-          <span className="value">{stats.avgStreak}</span>
-        </div>
-        <div className="stat-card">
-          <span className="label">Best Streak</span>
-          <span className="value">{stats.bestStreak} <Trophy size={16} style={{ color: '#f59e0b', verticalAlign: 'middle' }} /></span>
-        </div>
-        {stats.extraWorkTodayXP > 0 && (
-          <div className="stat-card" style={{ background: '#f5f7ff', border: '1px solid #e0e7ff' }}>
-            <span className="label" style={{ color: '#4338ca' }}>Today's Grind</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Flame className="text-indigo-600" size={24} />
-              <span className="value" style={{ color: '#4338ca' }}>+{stats.extraWorkTodayXP} XP</span>
-            </div>
-            <span style={{ fontSize: '0.7rem', color: '#6366f1', fontWeight: 600 }}>Bonus from extra efforts!</span>
-          </div>
-        )}
-        {todayBadge && (
-          <div className="stat-card" style={{ background: 'linear-gradient(135deg, #fffbeb, #fef3c7)', border: '1px solid #fcd34d' }}>
-            <span className="label" style={{ color: '#92400e' }}>Daily Award</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Award className="text-amber-500" size={24} />
-              <span className="value" style={{ color: '#92400e', fontSize: '1.2rem' }}>{todayBadge}</span>
-            </div>
-            <span style={{ fontSize: '0.7rem', color: '#b45309', fontWeight: 600 }}>Earned for 2x productivity!</span>
-          </div>
-        )}
-      </div>
 
       <div className="habit-grid">
         {(() => {
