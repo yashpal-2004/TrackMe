@@ -124,12 +124,7 @@ function App() {
           </div>
 
           <div className="hero-right">
-            {/* Speech Bubble */}
-            <div className="speech-bubble">
-              ACTIVE METRICS ⚡
-            </div>
-
-            {/* Interactive Product Metric Preview Card */}
+            {/* Interactive Metric Preview Widget */}
             <div className="character-preview-card">
               {/* Metric selector controls */}
               <div className="character-controls">
