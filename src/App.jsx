@@ -32,7 +32,7 @@ function App() {
             <Compass size={24} className="brand-icon" />
           </div>
           <div className="brand-text">
-            <h2>Lifestyle</h2>
+            <h2>TrackMe</h2>
             <span>Flow Hub</span>
           </div>
         </div>
@@ -82,7 +82,7 @@ function App() {
           <div className="header-actions">
             <div className="health-badge">
               <Heart size={16} className="heart-pulse" />
-              <span>Lifestyle Active</span>
+              <span>TrackMe Active</span>
             </div>
           </div>
         </header>
