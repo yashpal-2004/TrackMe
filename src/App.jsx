@@ -57,9 +57,6 @@ function App() {
 
         {/* Right Actions */}
         <div className="nav-actions">
-          <button className="nav-action-pill" onClick={() => alert('Syncing local caches with Firebase Cloud Store!')}>
-            SYNC
-          </button>
           <button className="nav-action-pill bag-pill">
             STATS — 3
           </button>
@@ -84,12 +81,6 @@ function App() {
               {tab.name}
             </button>
           ))}
-          <button className="mobile-sync-btn" onClick={() => {
-            alert('Syncing caches...');
-            setMobileMenuOpen(false);
-          }}>
-            SYNC
-          </button>
         </div>
       )}
 
