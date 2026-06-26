@@ -171,6 +171,11 @@
   flex: 1.2;
 }
 
+.hero-left.full-width {
+  flex: 1;
+  max-width: 100%;
+}
+
 .hero-title-group {
   display: flex;
   flex-direction: column;
